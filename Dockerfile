@@ -1,10 +1,14 @@
-FROM registry-gitlab.nexon.com/infraleadingtech/images/go:1.19-alpine
+FROM golang:1.19-alpine as build
 
 WORKDIR /go/src/go-template
 
 COPY . .
 
-RUN make build 
+RUN make build
+
+FROM scratch
+
+COPY --from=build /go/src/go-template/bin/go-template ./app
 
 EXPOSE 8080
-CMD ["./bin/app"]
+CMD ["./App"]

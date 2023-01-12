@@ -17,7 +17,7 @@ build:
 	@/bin/sh -c 'echo "${GREEN}Start build process${NC}"'
 	@mkdir -p bin
 	@go mod download && go mod verify
-	@go build -o bin/ cmd/app/main.go
+	@go build -o bin/
 .PHONY: build
 
 # create changelog
