@@ -18,6 +18,17 @@ jobs:
       - name: Test
         run: go test -v ./...
 
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: go mod tidy && go mod vendor
+
+      - name: SAST
+        run: gosec -fmt=html -out=.public/sast/index.html ./...; gosec -fmt=json -out=.public/sast/results.json ./...; gosec ./...
+
   build:
     runs-on: ubuntu-latest
     steps:
