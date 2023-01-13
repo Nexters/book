@@ -17,7 +17,10 @@ const version = "0.0.1"
 func run(cmd *cobra.Command, args []string) {
 	// export PORT to environ
 	if Port != "" {
-		os.Setenv("PORT", Port)
+		err := os.Setenv("PORT", Port)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	fx.New(app.Modules).Run()
 }
