@@ -12,6 +12,8 @@ import (
 	"go.uber.org/fx"
 )
 
+const version = "0.0.1"
+
 func run(cmd *cobra.Command, args []string) {
 	// export PORT to environ
 	if Port != "" {
