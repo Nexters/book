@@ -13,3 +13,4 @@ jobs:
         with:
           release-type: go
           package-name: go-template
+          token: ${{ secrets.ACCESS_TOKEN }}
