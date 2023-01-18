@@ -3,7 +3,7 @@ package config
 import (
 	"log"
 
-	"gorm.io/driver/sqlite"
+	"go.uber.org/fx"
 	"gorm.io/gorm"
 )
 
@@ -16,8 +16,8 @@ type (
 	}
 )
 
-func NewDatabase() database {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+func NewDatabase(settings *Settings, dialector SQLiteDialector) Database {
+	db, err := gorm.Open(dialector, &gorm.Config{})
 
 	if err != nil {
 		log.Fatal(err)
@@ -31,3 +31,7 @@ func (db database) MakeMigration(repositories ...interface{}) {
 		log.Fatal(err)
 	}
 }
+
+var DBModule = fx.Module("database",
+	fx.Provide(NewDatabase, NewSQLiteDialector),
+)
