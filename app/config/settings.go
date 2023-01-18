@@ -11,6 +11,12 @@ type Settings struct {
 	App struct {
 		Port int `env:"PORT" json:"port"`
 	}
+	Database struct {
+		User     string `env:"DATABASE_USER"`
+		Password string `env:"DATABASE_PASSWORD"`
+		Port     int    `env:"DATABASE_PORT"`
+		Name     string `env:"DATABASE_NAME"`
+	}
 	Extras env.EnvSet `json:"-"`
 }
 

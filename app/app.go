@@ -20,6 +20,7 @@ func RegisterHooks(
 	lifecycle fx.Lifecycle,
 	e *echo.Echo,
 	settings *config.Settings,
+	db config.Database,
 ) {
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
@@ -27,6 +28,7 @@ func RegisterHooks(
 			// https://github.com/uber-go/fx/issues/627#issuecomment-399235227
 			go func() {
 				bindRoute(e)
+				// db.MakeMigration(&entity.Book{})
 				if err := e.Start(settings.BindAddress()); err != nil {
 					log.Fatal(err)
 				}
@@ -41,7 +43,8 @@ func RegisterHooks(
 }
 
 var Modules = fx.Module(
-	"nass-admin",
+	"app",
 	fx.Provide(config.NewSettings, echo.New),
+	fx.Options(config.DBModule),
 	fx.Invoke(RegisterHooks),
 )
