@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/chaewonkong/go-template/compare/v1.0.0...v1.1.0) (2023-01-18)
+
+
+### Features
+
+* add sqlite ([08c70c6](https://github.com/chaewonkong/go-template/commit/08c70c6a07e6cb1faa7aea71bf47087414016f0e))
+
 ## 1.0.0 (2023-01-15)
 
 
