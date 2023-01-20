@@ -3,8 +3,5 @@ vendor
 .env
 Dockerfile
 docker-compose
-LICENSE
-package.json
 README.md
-yarn.lock
 .public

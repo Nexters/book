@@ -20,13 +20,6 @@ build:
 	@go build -o bin/
 .PHONY: build
 
-# create changelog
-current_changelog:
-	@/bin/sh -c "echo \"${GREEN}[release version] $(shell npx standard-version --dry-run | grep tagging | cut -d ' ' -f4)${NC}\""
-	@/bin/sh -c "echo \"${GREEN}[description] ${NC}\""
-	@npx standard-version --dry-run --silent | grep -v Done | grep -v "\-\-\-" | grep -v standard-version
-.PHONY: current_changelog
-
 # static application security testing (SAST)
 # go get -u github.com/securego/gosec/v2/cmd/gosec
 sast:

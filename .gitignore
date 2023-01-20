@@ -317,3 +317,6 @@ dist
 vendor
 bin
 .public
+
+# SQLite
+*.db
