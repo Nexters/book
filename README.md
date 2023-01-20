@@ -23,8 +23,18 @@ Uses go 1.19
 make ref
 ```
 
+Add `.env` file to the root with the following:
+
+```
+PORT=
+DATABASE_USER=
+DATABASE_PASSWORD=
+DATABASE_PORT=
+DATABASE_NAME=
+```
+
 ### Run
 
 ```
-docker-compose up
+make run
 ```
