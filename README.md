@@ -1,4 +1,4 @@
-[go 1.19](https://img.shields.io/badge/golang-1.19-blue)
+![go 1.19](https://img.shields.io/badge/golang-1.19-blue)
 
 # 📚 book
 
