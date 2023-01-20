@@ -20,7 +20,7 @@ Uses go 1.19
 ### Install Packages
 
 ```
-make ref
+make install
 ```
 
 Add `.env` file to the root with the following:

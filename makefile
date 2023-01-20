@@ -6,11 +6,11 @@ include .env
 export
 
 # install dependencies: tidy for removing unused packages, vendor for installing packages in vendor directory
-ref:
+install:
 	@/bin/sh -c 'echo "${GREEN}[Install packages in vendor directory]${NC}"'
 	@go mod tidy -v
 	@go mod vendor -v
-.PHONY: ref
+.PHONY: install
 
 # run
 run:
