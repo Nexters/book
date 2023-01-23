@@ -36,7 +36,9 @@ func RegisterHooks(
 			go func() {
 				bindRoute(e, c)
 
-				db.AutoMigrate(&entity.User{}, &entity.Book{}, &entity.UserBooks{}, &entity.Memo{})
+				if err := db.AutoMigrate(&entity.User{}, &entity.Book{}, &entity.UserBooks{}, &entity.Memo{}); err != nil {
+					log.Fatal(err)
+				}
 
 				if err := e.Start(settings.BindAddress()); err != nil {
 					log.Fatal(err)
