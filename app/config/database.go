@@ -7,14 +7,9 @@ import (
 	"gorm.io/gorm"
 )
 
-type (
-	Database interface {
-		MakeMigration(repositories ...interface{})
-	}
-	database struct {
-		gorm *gorm.DB
-	}
-)
+type Database struct {
+	*gorm.DB
+}
 
 func NewDatabase(settings *Settings, dialector SQLiteDialector) Database {
 	db, err := gorm.Open(dialector, &gorm.Config{})
@@ -23,15 +18,9 @@ func NewDatabase(settings *Settings, dialector SQLiteDialector) Database {
 		log.Fatal(err)
 	}
 
-	return database{db}
-}
-
-func (db database) MakeMigration(repositories ...interface{}) {
-	if err := db.gorm.AutoMigrate(repositories...); err != nil {
-		log.Fatal(err)
-	}
+	return Database{db}
 }
 
 var DBModule = fx.Module("database",
-	fx.Provide(NewDatabase, NewSQLiteDialector),
+	fx.Provide(NewDatabase, NewSQLiteDialector, NewMySQLDialector),
 )
