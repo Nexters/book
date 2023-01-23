@@ -1,7 +1,7 @@
 package entity
 
 type Book struct {
-	BookId      uint64 `gormn:"id" json:"bookId"`
+	BookID      uint64 `gorm:"id" json:"bookId"`
 	Title       string `gorm:"title" json:"title"`
 	Author      string `gorm:"author" json:"author"`
 	ShopLink    string `gorm:"shopLink" json:"shopLink"`
