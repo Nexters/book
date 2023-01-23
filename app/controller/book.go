@@ -28,10 +28,16 @@ func (b bookController) FetchAll(c echo.Context) error {
 }
 
 func (b bookController) Search(c echo.Context) error {
-	res, err := b.s.SearchBookByTitle("색채가")
+	title := c.QueryParam("title")
+	res, err := b.s.SearchBookByTitle(title)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	return c.JSON(http.StatusOK, res.Items)
+}
+
+func (b bookController) CreateBook(c echo.Context) error {
+
+	return nil
 }
