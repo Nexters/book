@@ -1,7 +1,9 @@
 package entity
 
+import "gorm.io/gorm"
+
 type Book struct {
-	BookID      uint64 `gorm:"id" json:"bookId"`
+	gorm.Model
 	Title       string `gorm:"title" json:"title"`
 	Author      string `gorm:"author" json:"author"`
 	ShopLink    string `gorm:"shopLink" json:"shopLink"`
