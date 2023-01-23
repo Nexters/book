@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/Nexters/book/compare/v0.1.0...v0.2.0) (2023-01-23)
+
+
+### Features
+
+* entity 및 user repository 추가 ([#3](https://github.com/Nexters/book/issues/3)) ([b39cdc0](https://github.com/Nexters/book/commit/b39cdc0c56945569d470e2c489d8bb7c92fcbe63))
+
 ## 0.1.0 (2023-01-20)
 
 
