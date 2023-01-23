@@ -1,7 +1,7 @@
 package app
 
 import (
-	r "github.com/chaewonkong/go-template/app/repository"
+	r "github.com/nexters/book/app/repository"
 	"go.uber.org/fx"
 )
 

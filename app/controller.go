@@ -1,7 +1,7 @@
 package app
 
 import (
-	c "github.com/chaewonkong/go-template/app/controller"
+	c "github.com/nexters/book/app/controller"
 	"go.uber.org/fx"
 )
 

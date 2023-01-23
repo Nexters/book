@@ -3,8 +3,8 @@ package controller
 import (
 	"net/http"
 
-	"github.com/chaewonkong/go-template/app/repository"
 	"github.com/labstack/echo/v4"
+	"github.com/nexters/book/app/repository"
 )
 
 type (

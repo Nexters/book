@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/chaewonkong/go-template/app"
+	"github.com/nexters/book/app"
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 )
