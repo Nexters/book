@@ -1,27 +1,10 @@
 version: "3"
 
 services:
-  mysql:
-    image: mysql:5.7.22
+  server:
+    build:
+      context: .
     ports:
-      - 3306:3306
-    environment:
-      # - MYSQL_ROOT_HOST=localhost
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=password
-      - MYSQL_DATABASE=book
-      - MYSQL_ROOT_PASSWORD=password
-    # volumes:
-    #   - book-db:/var/lib/mysql
-    # server:
-    #   build:
-    #     context: .
-    #   ports:
-    #     - "8080:8080"
-    #   env_file:
-    #     - .env
-    #   depends_on:
-    #     - mysql
-
-    # volumes:
-    #   book-db:
+      - "8080:8080"
+    env_file:
+      - .env
