@@ -4,14 +4,17 @@ go 1.19
 
 require (
 	github.com/Netflix/go-env v0.0.0-20220526054621-78278af1949d
+	github.com/google/uuid v1.3.0
 	github.com/labstack/echo/v4 v4.10.0
 	github.com/spf13/cobra v1.6.1
 	go.uber.org/fx v1.19.1
+	gorm.io/driver/mysql v1.4.5
 	gorm.io/driver/sqlite v1.4.4
 	gorm.io/gorm v1.24.3
 )
 
 require (
+	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect

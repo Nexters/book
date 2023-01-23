@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/chaewonkong/go-template/app/config"
+	"github.com/chaewonkong/go-template/app/entity"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/fx"
 )
@@ -16,7 +17,9 @@ func bindRoute(e *echo.Echo, c Controller) {
 	})
 
 	b := e.Group("/books")
+	u := e.Group("/users")
 	b.GET("", c.Book.FetchAll)
+	u.POST("", c.User.CreateUser)
 }
 
 func RegisterHooks(
@@ -32,7 +35,11 @@ func RegisterHooks(
 			// https://github.com/uber-go/fx/issues/627#issuecomment-399235227
 			go func() {
 				bindRoute(e, c)
-				// db.MakeMigration(&entity.Book{})
+
+				if err := db.AutoMigrate(&entity.User{}, &entity.Book{}, &entity.UserBooks{}, &entity.Memo{}); err != nil {
+					log.Fatal(err)
+				}
+
 				if err := e.Start(settings.BindAddress()); err != nil {
 					log.Fatal(err)
 				}
@@ -51,5 +58,6 @@ var Modules = fx.Module(
 	fx.Provide(config.NewSettings, echo.New),
 	fx.Options(config.DBModule),
 	fx.Options(ControllerModule),
+	fx.Options(RepositoryModule),
 	fx.Invoke(RegisterHooks),
 )

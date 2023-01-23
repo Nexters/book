@@ -10,6 +10,6 @@ import (
 type SQLiteDialector gorm.Dialector
 
 func NewSQLiteDialector(settings *Settings) SQLiteDialector {
-	db := fmt.Sprintf("%s.db", settings.Database.Name)
+	db := fmt.Sprintf("%s.sqlite", settings.Database.Name)
 	return sqlite.Open(db)
 }

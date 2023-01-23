@@ -320,3 +320,4 @@ bin
 
 # SQLite
 *.db
+*.sqlite
