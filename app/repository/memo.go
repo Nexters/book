@@ -11,4 +11,4 @@ func NewMemoRepository() MemoRepository {
 
 func (m memoRepository) CreateMemo() {}
 
-func (m memoRepository) FindAllMemoByBookID() {}
+func (m memoRepository) FindAllMemoByUserAndBookID() {}

@@ -7,5 +7,5 @@ import (
 
 var ServiceModule = fx.Module(
 	"service",
-	fx.Provide(service.NewBookService),
+	fx.Provide(service.NewBookService, service.NewMemoService),
 )

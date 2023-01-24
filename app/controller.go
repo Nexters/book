@@ -8,13 +8,15 @@ import (
 type Controller struct {
 	Book c.BookController
 	User c.UserController
+	Memo c.MemoController
 }
 
 func NewController(
 	book c.BookController,
 	user c.UserController,
+	memo c.MemoController,
 ) Controller {
-	return Controller{book, user}
+	return Controller{book, user, memo}
 }
 
 var ControllerModule = fx.Module(
@@ -22,6 +24,7 @@ var ControllerModule = fx.Module(
 	fx.Provide(
 		c.NewBookController,
 		c.NewUserController,
+		c.NewMemoController,
 		NewController,
 	),
 )
