@@ -8,13 +8,6 @@ import (
 	"github.com/nexters/book/app/service"
 )
 
-type CreateMemoParam struct {
-	UserID   string `json:"userId"`
-	BookID   uint64 `json:"bookId"`
-	Text     string `json:"text"`
-	Category string `json:"category"`
-}
-
 type (
 	MemoController interface {
 		FindAllMemoByUserAndBookID(c echo.Context) error
@@ -47,7 +40,7 @@ func (m memoController) FindAllMemoByUserAndBookID(c echo.Context) error {
 }
 
 func (m memoController) CreateMemo(c echo.Context) error {
-	param := CreateMemoParam{}
+	param := service.CreateMemoParam{}
 	if err := c.Bind(&param); err != nil {
 		return c.String(http.StatusBadRequest, "Bad request, check request body")
 	}
