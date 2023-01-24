@@ -5,9 +5,12 @@ import (
 	"log"
 	"net/http"
 
+	echoSwagger "github.com/swaggo/echo-swagger"
+
 	"github.com/labstack/echo/v4"
 	"github.com/nexters/book/app/config"
 	"github.com/nexters/book/app/entity"
+	_ "github.com/nexters/book/docs"
 	"github.com/nexters/book/external/search"
 	"go.uber.org/fx"
 )
@@ -17,6 +20,7 @@ func bindRoute(e *echo.Echo, c Controller) {
 		return c.String(http.StatusOK, "ok")
 	})
 
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	b := e.Group("/books")
 	u := e.Group("/users")
 	m := e.Group("/memos")
@@ -40,6 +44,7 @@ func RegisterHooks(
 		OnStart: func(ctx context.Context) error {
 			// hooks는 blocking으로 동작하므로 separate goroutine으로 실행 필요
 			// https://github.com/uber-go/fx/issues/627#issuecomment-399235227
+
 			go func() {
 				bindRoute(e, c)
 

@@ -5,6 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/nexters/book/app/repository"
+	_ "github.com/nexters/book/docs"
 )
 
 type (
@@ -20,6 +21,13 @@ func NewUserController(r repository.UserRepository) UserController {
 	return userController{r}
 }
 
+// @Tags         user
+// @Summary 사용자 추가 API
+// @Description API를 호출하면 UUID를 발급함. local storage에 저장해두고 userId로 사용하면 됨.
+// @Accept json
+// @Produce json
+// @Success 201 {object} entity.User
+// @Router /user [post]
 func (u userController) CreateUser(c echo.Context) error {
 	user, err := u.repo.CreateUser()
 	if err != nil {
