@@ -5,9 +5,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/chaewonkong/go-template/app/config"
-	"github.com/chaewonkong/go-template/app/entity"
 	"github.com/labstack/echo/v4"
+	"github.com/nexters/book/app/config"
+	"github.com/nexters/book/app/entity"
+	"github.com/nexters/book/external/search"
 	"go.uber.org/fx"
 )
 
@@ -19,6 +20,9 @@ func bindRoute(e *echo.Echo, c Controller) {
 	b := e.Group("/books")
 	u := e.Group("/users")
 	b.GET("", c.Book.FetchAll)
+	b.GET("/:isbn", c.Book.FindBookByISBN)
+	b.GET("/search", c.Book.Search)
+	b.POST("", c.Book.CreateBook)
 	u.POST("", c.User.CreateUser)
 }
 
@@ -55,9 +59,10 @@ func RegisterHooks(
 
 var Modules = fx.Module(
 	"app",
-	fx.Provide(config.NewSettings, echo.New),
+	fx.Provide(config.NewSettings, echo.New, search.NewBookSearch),
 	fx.Options(config.DBModule),
 	fx.Options(ControllerModule),
 	fx.Options(RepositoryModule),
+	fx.Options(ServiceModule),
 	fx.Invoke(RegisterHooks),
 )

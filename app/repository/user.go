@@ -3,9 +3,9 @@ package repository
 import (
 	"errors"
 
-	"github.com/chaewonkong/go-template/app/config"
-	"github.com/chaewonkong/go-template/app/entity"
 	"github.com/google/uuid"
+	"github.com/nexters/book/app/config"
+	"github.com/nexters/book/app/entity"
 )
 
 type (

@@ -17,6 +17,11 @@ type Settings struct {
 		Port     int    `env:"DATABASE_PORT"`
 		Name     string `env:"DATABASE_NAME"`
 	}
+	External struct {
+		SearchEndpoint string `env:"NAVER_SEARCH_API"`
+		ClientID       string `env:"NAVER_CLIENT_ID"`
+		ClientSecret   string `env:"NAVER_CLIENT_SECRET"`
+	}
 	Extras env.EnvSet `json:"-"`
 }
 

@@ -3,8 +3,8 @@ package controller
 import (
 	"net/http"
 
-	"github.com/chaewonkong/go-template/app/repository"
 	"github.com/labstack/echo/v4"
+	"github.com/nexters/book/app/repository"
 )
 
 type (
@@ -26,5 +26,5 @@ func (u userController) CreateUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
-	return c.JSON(http.StatusOK, user)
+	return c.JSON(http.StatusCreated, user)
 }

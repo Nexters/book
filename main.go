@@ -3,7 +3,7 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "github.com/chaewonkong/go-template/cmd"
+import "github.com/nexters/book/cmd"
 
 var Port string
 
