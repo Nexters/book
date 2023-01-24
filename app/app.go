@@ -19,11 +19,14 @@ func bindRoute(e *echo.Echo, c Controller) {
 
 	b := e.Group("/books")
 	u := e.Group("/users")
+	m := e.Group("/memos")
 	b.GET("", c.Book.FetchAll)
 	b.GET("/:isbn", c.Book.FindBookByISBN)
 	b.GET("/search", c.Book.Search)
 	b.POST("", c.Book.CreateBook)
 	u.POST("", c.User.CreateUser)
+	m.GET("", c.Memo.FindAllMemoByUserAndBookID)
+	m.POST("", c.Memo.CreateMemo)
 }
 
 func RegisterHooks(
