@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/Nexters/book/compare/v0.4.0...v0.5.0) (2023-01-24)
+
+
+### Features
+
+* add swagger ([dba09e6](https://github.com/Nexters/book/commit/dba09e62709413b6ecc44a3c582933467e2a9cab))
+
 ## [0.4.0](https://github.com/Nexters/book/compare/v0.3.0...v0.4.0) (2023-01-24)
 
 
