@@ -1,10 +1,19 @@
 version: "3"
 
 services:
-  server:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    restart: 'always'
+
+  app:
     build:
       context: .
     ports:
-      - "8080:8080"
+      - "8082:8082"
     env_file:
       - .env

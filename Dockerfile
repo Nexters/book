@@ -1,15 +1,16 @@
 FROM golang:1.19 as build
 
-WORKDIR /go/src/go-template
+WORKDIR /go/src/book
 
 COPY . .
 
 RUN mkdir -p bin &&\
     go mod download && go mod verify &&\
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/
+    GOOS=linux GOARCH=amd64 go build -o bin/
 
-FROM scratch
-COPY --from=build /go/src/go-template/bin/go-template ./app
+FROM golang:1.19
 
-EXPOSE 8080
-CMD ["./app"]
+COPY --from=build /go/src/book/bin/book ./book
+
+EXPOSE 8082
+CMD ["./book"]
