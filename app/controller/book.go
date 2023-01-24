@@ -11,8 +11,9 @@ import (
 )
 
 type CreateBookParam struct {
-	ISBN  string `json:"ISBN"`
-	Title string `json:"title"`
+	ISBN   string `json:"ISBN"`
+	Title  string `json:"title"`
+	UserID string `json:"userId"`
 }
 
 type (
@@ -20,6 +21,7 @@ type (
 		FetchAll(ctx echo.Context) error
 		Search(c echo.Context) error
 		CreateBook(c echo.Context) error
+		FindBookByISBN(c echo.Context) error
 	}
 	bookController struct {
 		bookSearch  search.BookSearch
@@ -32,7 +34,26 @@ func NewBookController(s search.BookSearch, svc service.BookService) BookControl
 }
 
 func (b bookController) FetchAll(c echo.Context) error {
-	return c.String(http.StatusOK, "book")
+
+	userId := c.QueryParam("userId")
+
+	books, err := b.bookService.FindAllBooks(userId)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, books)
+}
+
+func (b bookController) FindBookByISBN(c echo.Context) error {
+	ISBN := c.Param("isbn")
+	book, err := b.bookService.FindBookByISBN(ISBN)
+	if err != nil {
+		c.JSON(http.StatusNotFound, err)
+	}
+
+	return c.JSON(http.StatusOK, book)
 }
 
 func (b bookController) Search(c echo.Context) error {
@@ -51,7 +72,7 @@ func (b bookController) CreateBook(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Provide IBSN and book title correctly")
 	}
 
-	res, err := b.bookService.CreateBook(bookParam.Title, bookParam.ISBN)
+	res, err := b.bookService.CreateBook(bookParam.Title, bookParam.ISBN, bookParam.UserID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}

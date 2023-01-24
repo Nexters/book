@@ -20,6 +20,7 @@ func bindRoute(e *echo.Echo, c Controller) {
 	b := e.Group("/books")
 	u := e.Group("/users")
 	b.GET("", c.Book.FetchAll)
+	b.GET("/:isbn", c.Book.FindBookByISBN)
 	b.GET("/search", c.Book.Search)
 	b.POST("", c.Book.CreateBook)
 	u.POST("", c.User.CreateUser)

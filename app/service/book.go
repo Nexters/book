@@ -10,7 +10,9 @@ import (
 
 type (
 	BookService interface {
-		CreateBook(title string, ISBN string) (entity.Book, error)
+		CreateBook(title string, ISBN string, userID string) (entity.Book, error)
+		FindBookByISBN(ISBN string) (entity.Book, error)
+		FindAllBooks(userID string) ([]entity.Book, error)
 	}
 	bookService struct {
 		repo       repository.BookRepository
@@ -22,7 +24,7 @@ func NewBookService(repo repository.BookRepository, bs search.BookSearch) BookSe
 	return bookService{repo, bs}
 }
 
-func (b bookService) CreateBook(title string, ISBN string) (entity.Book, error) {
+func (b bookService) CreateBook(title string, ISBN string, userID string) (entity.Book, error) {
 	// search naver
 	searchedRes, err := b.bookSearch.SearchBookByTitle(title)
 	if err != nil {
@@ -30,7 +32,9 @@ func (b bookService) CreateBook(title string, ISBN string) (entity.Book, error) 
 		return entity.Book{}, err
 	}
 
-	book := repository.CreateBookParams{}
+	book := repository.CreateBookParams{
+		UserID: userID,
+	}
 
 	// find one by matching ISBN
 	for _, item := range searchedRes.Items {
@@ -52,4 +56,14 @@ func (b bookService) CreateBook(title string, ISBN string) (entity.Book, error) 
 
 	// add to db
 	return b.repo.CreateBook(book)
+
+	// TODO: add to user_books
+}
+
+func (b bookService) FindAllBooks(userID string) ([]entity.Book, error) {
+	return b.repo.FindAllBooks(userID)
+}
+
+func (b bookService) FindBookByISBN(ISBN string) (entity.Book, error) {
+	return b.repo.FindBookByISBN(ISBN)
 }
