@@ -1,0 +1,250 @@
+definitions:
+  controller.CreateBookParam:
+    properties:
+      ISBN:
+        type: string
+      title:
+        type: string
+      userId:
+        type: string
+    type: object
+  entity.Book:
+    properties:
+      ISBN:
+        type: string
+      author:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      price:
+        type: string
+      publisher:
+        type: string
+      shopLink:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  entity.Memo:
+    properties:
+      bookId:
+        type: integer
+      category:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      text:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: integer
+    type: object
+  entity.User:
+    properties:
+      books:
+        items:
+          $ref: '#/definitions/entity.Book'
+        type: array
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      id:
+        type: integer
+      uid:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  search.SearchItem:
+    properties:
+      author:
+        type: string
+      description:
+        type: string
+      discount:
+        type: string
+      image:
+        type: string
+      isbn:
+        type: string
+      link:
+        type: string
+      pubdate:
+        type: string
+      publisher:
+        type: string
+      title:
+        type: string
+    type: object
+  service.CreateMemoParam:
+    properties:
+      bookId:
+        type: integer
+      category:
+        type: string
+      text:
+        type: string
+      userId:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /books:
+    get:
+      consumes:
+      - application/json
+      description: Naver API를 이용해 책을 검색하게 하는 API query string으로 title을 넘기면 검색 결과를
+        반환.
+      parameters:
+      - description: 미움받을 용기
+        in: query
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/search.SearchItem'
+            type: array
+      summary: 책 검색 API
+      tags:
+      - book
+    post:
+      consumes:
+      - application/json
+      description: 책의 ISBN, 제목, userId를 body로 제공하면 읽을책으로 등록하는 API
+      parameters:
+      - description: CreateBookParam{}
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.CreateBookParam'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Book'
+      summary: 읽을 책을 등록하는 API
+      tags:
+      - book
+  /books/{bookId}:
+    get:
+      consumes:
+      - application/json
+      description: ISBN으로 책의 상세 내용을 조회하는 API
+      parameters:
+      - description: "12345678"
+        in: path
+        name: bookId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Book'
+      summary: ISBN으로 책 조회 API
+      tags:
+      - book
+  /memos:
+    get:
+      consumes:
+      - application/json
+      description: 특정 사용자가 특정 책에 대해 작성한 모든 메모를 가져오는 API. query string으로 userId와 bookId를
+        넘기면 됨.
+      parameters:
+      - description: aaaa-bbbb-cccc
+        in: query
+        name: userId
+        required: true
+        type: string
+      - description: "2"
+        in: query
+        name: bookId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Memo'
+            type: array
+      summary: 특정 사용자가 특정 책에 대해 작성한 모든 메모를 가져오는 API
+      tags:
+      - memo
+    post:
+      consumes:
+      - application/json
+      description: 특정 사용자가 특정 책에 대해 메모를 작성하는 API
+      parameters:
+      - description: service.CreateMemoParam{}
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/service.CreateMemoParam'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Memo'
+      summary: 메모 추가 API
+      tags:
+      - memo
+  /user:
+    post:
+      consumes:
+      - application/json
+      description: API를 호출하면 UUID를 발급함. local storage에 저장해두고 userId로 사용하면 됨.
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.User'
+      summary: 사용자 추가 API
+      tags:
+      - user
+swagger: "2.0"
