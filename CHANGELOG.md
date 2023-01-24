@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.0](https://github.com/Nexters/book/compare/v0.3.0...v0.4.0) (2023-01-24)
+
+
+### Features
+
+* add memo controller and boilerplate service ([ef4ff3f](https://github.com/Nexters/book/commit/ef4ff3f472e33d0c26d3487ce81b057b1e5affad))
+* implement memo api ([d923f42](https://github.com/Nexters/book/commit/d923f425c85507da9efce5b356a212e4311a2351))
+
 ## [0.3.0](https://github.com/Nexters/book/compare/v0.2.0...v0.3.0) (2023-01-24)
 
 
