@@ -8,6 +8,7 @@ import (
 	echoSwagger "github.com/swaggo/echo-swagger"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/nexters/book/app/config"
 	"github.com/nexters/book/app/entity"
 	_ "github.com/nexters/book/docs"
@@ -46,6 +47,10 @@ func RegisterHooks(
 			// https://github.com/uber-go/fx/issues/627#issuecomment-399235227
 
 			go func() {
+				e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+					AllowOrigins: []string{"http://localhost:3030", "http://localhost:3000"},
+					AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+				}))
 				bindRoute(e, c)
 
 				if err := db.AutoMigrate(&entity.User{}, &entity.Book{}, &entity.UserBooks{}, &entity.Memo{}); err != nil {
