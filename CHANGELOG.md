@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.0](https://github.com/Nexters/book/compare/v0.2.0...v0.3.0) (2023-01-24)
+
+
+### Features
+
+* implement book api ([f541f18](https://github.com/Nexters/book/commit/f541f18a3e3aa27d85f81e505b105262dff9bf90))
+* implement naver book search api ([7880387](https://github.com/Nexters/book/commit/7880387f73d5e55a61e0433dcfcbbcf162aa642c))
+* search and create book ([aa13b13](https://github.com/Nexters/book/commit/aa13b139f109f98fd5147213ca17890f1f202612))
+
 ## [0.2.0](https://github.com/Nexters/book/compare/v0.1.0...v0.2.0) (2023-01-23)
 
 
