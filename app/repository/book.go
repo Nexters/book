@@ -24,10 +24,10 @@ type CreateBookParams struct {
 	Author      string `json:"author"`
 	ShopLink    string `json:"shopLink"`
 	Image       string `json:"image"`
-	Price       int    `json:"price"`
+	Price       string `json:"price"`
 	Publisher   string `json:"publisher"`
 	ISBN        string `json:"ISBN"`
-	Description string `json:"discription"`
+	Description string `json:"description"`
 }
 
 func NewBookRepository(db config.Database) BookRepository {

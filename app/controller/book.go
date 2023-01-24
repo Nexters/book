@@ -6,21 +6,29 @@ import (
 
 	"github.com/labstack/echo/v4"
 
+	"github.com/nexters/book/app/service"
 	"github.com/nexters/book/external/search"
 )
+
+type CreateBookParam struct {
+	ISBN  string `json:"ISBN"`
+	Title string `json:"title"`
+}
 
 type (
 	BookController interface {
 		FetchAll(ctx echo.Context) error
 		Search(c echo.Context) error
+		CreateBook(c echo.Context) error
 	}
 	bookController struct {
-		s search.BookSearch
+		bookSearch  search.BookSearch
+		bookService service.BookService
 	}
 )
 
-func NewBookController(s search.BookSearch) BookController {
-	return bookController{s}
+func NewBookController(s search.BookSearch, svc service.BookService) BookController {
+	return bookController{s, svc}
 }
 
 func (b bookController) FetchAll(c echo.Context) error {
@@ -29,7 +37,7 @@ func (b bookController) FetchAll(c echo.Context) error {
 
 func (b bookController) Search(c echo.Context) error {
 	title := c.QueryParam("title")
-	res, err := b.s.SearchBookByTitle(title)
+	res, err := b.bookSearch.SearchBookByTitle(title)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,6 +46,14 @@ func (b bookController) Search(c echo.Context) error {
 }
 
 func (b bookController) CreateBook(c echo.Context) error {
+	bookParam := CreateBookParam{}
+	if err := c.Bind(&bookParam); err != nil {
+		return c.String(http.StatusBadRequest, "Provide IBSN and book title correctly")
+	}
 
-	return nil
+	res, err := b.bookService.CreateBook(bookParam.Title, bookParam.ISBN)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+	return c.JSON(http.StatusCreated, res)
 }

@@ -26,11 +26,11 @@ type SearchItem struct {
 	Author      string `json:"author"`
 	ShopLink    string `json:"link"`
 	Image       string `json:"image"`
-	Price       int    `json:"discount"`
+	Price       string `json:"discount"`
 	Publisher   string `json:"publisher"`
-	ISBN        string `json:"ibsn"`
-	PubDate     string `json:"pubdate"`
-	Description string `json:"discription"`
+	ISBN        string `json:"isbn"`
+	Pubdate     string `json:"pubdate"`
+	Description string `json:"description"`
 }
 
 type (
@@ -63,7 +63,7 @@ func (b bookSearch) SearchBookByTitle(title string) (SearchResponse, error) {
 
 	searchResponse := SearchResponse{}
 
-	json.Unmarshal(result, &searchResponse)
+	err = json.Unmarshal(result, &searchResponse)
 	if err != nil {
 		log.Fatal(err)
 	}

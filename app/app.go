@@ -21,6 +21,7 @@ func bindRoute(e *echo.Echo, c Controller) {
 	u := e.Group("/users")
 	b.GET("", c.Book.FetchAll)
 	b.GET("/search", c.Book.Search)
+	b.POST("", c.Book.CreateBook)
 	u.POST("", c.User.CreateUser)
 }
 
@@ -61,5 +62,6 @@ var Modules = fx.Module(
 	fx.Options(config.DBModule),
 	fx.Options(ControllerModule),
 	fx.Options(RepositoryModule),
+	fx.Options(ServiceModule),
 	fx.Invoke(RegisterHooks),
 )
