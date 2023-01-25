@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/Nexters/book/compare/v0.5.0...v0.5.1) (2023-01-25)
+
+
+### Bug Fixes
+
+* column property ([d5db8c5](https://github.com/Nexters/book/commit/d5db8c5537c16901dc275fc3bfa6309e6fe9e31d))
+
 ## [0.5.0](https://github.com/Nexters/book/compare/v0.4.0...v0.5.0) (2023-01-24)
 
 
