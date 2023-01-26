@@ -35,12 +35,12 @@ func (m memoController) FindAllMemoByUserAndBookID(c echo.Context) error {
 	userID := c.QueryParam("userId")
 	bookID := c.QueryParam("bookId")
 
-	bookIDUint64, err := strconv.ParseUint(bookID, 10, 64)
+	bookIDUint, err := strconv.ParseUint(bookID, 10, 32)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err)
 	}
 
-	memos, err := m.memoService.FindAllMemoByUserAndBookID(userID, bookIDUint64)
+	memos, err := m.memoService.FindAllMemoByUserAndBookID(userID, uint(bookIDUint))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}

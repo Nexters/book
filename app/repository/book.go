@@ -63,8 +63,8 @@ func (b bookRepository) CreateBook(params CreateBookParams) (book entity.Book, e
 	}
 
 	userBooks := entity.UserBooks{
-		UserID: uint64(user.ID),
-		BookID: uint64(book.ID),
+		UserID: user.ID,
+		BookID: book.ID,
 	}
 
 	res = b.db.Create(&userBooks)

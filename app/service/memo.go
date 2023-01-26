@@ -1,8 +1,6 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/nexters/book/app/entity"
 	"github.com/nexters/book/app/repository"
 )
@@ -39,28 +37,12 @@ func (m memoService) FindAllMemoByUserAndBookID(userID string, bookID uint) (mem
 	return
 }
 
-func (m memoService) CreateMemo(param CreateMemoParam) (entity.Memo, error) {
-	user := entity.User{}
-	memo := entity.Memo{
-		BookID:   param.BookID,
-		Text:     param.Text,
-		Category: param.Category,
-	}
-	res := m.db.Where("uid = ?", param.UserID).First(&user)
-	if res.Error != nil {
-		return memo, res.Error
+func (m memoService) CreateMemo(param CreateMemoParam) (memo entity.Memo, err error) {
+	user, err := m.userRepository.FindUserByUID(param.UserID)
+	if err != nil {
+		return
 	}
 
-	if res.RowsAffected == 0 {
-		return memo, errors.New("User not found")
-	}
-
-	memo.UserID = uint64(user.ID)
-
-	res = m.db.Create(&memo)
-	if res.Error != nil || res.RowsAffected == 0 {
-		return memo, errors.New("Memo creation failed")
-	}
-
-	return memo, nil
+	memo, err = m.memoRepository.CreateMemo(user.ID, param.BookID, param.Text, param.Category)
+	return
 }
