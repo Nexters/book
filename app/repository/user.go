@@ -11,6 +11,7 @@ import (
 type (
 	UserRepository interface {
 		CreateUser() (user entity.User, err error)
+		FindUserByUID(uid string) (entity.User, error)
 	}
 	userRepository struct {
 		db config.Database
@@ -19,6 +20,20 @@ type (
 
 func NewUserRepository(db config.Database) UserRepository {
 	return userRepository{db}
+}
+
+func (u userRepository) FindUserByUID(uid string) (user entity.User, err error) {
+	user = entity.User{Uid: uid}
+	res := u.db.Where(&user).First(&user)
+	if res.Error != nil {
+		err = res.Error
+		return
+	}
+	if res.RowsAffected == 0 {
+		err = errors.New("User not found")
+		return
+	}
+	return
 }
 
 func (u userRepository) CreateUser() (user entity.User, err error) {
