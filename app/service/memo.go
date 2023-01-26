@@ -1,73 +1,48 @@
 package service
 
 import (
-	"errors"
-
-	"github.com/nexters/book/app/config"
 	"github.com/nexters/book/app/entity"
+	"github.com/nexters/book/app/repository"
 )
 
 type CreateMemoParam struct {
 	UserID   string `json:"userId"`
-	BookID   uint64 `json:"bookId"`
+	BookID   uint   `json:"bookId"`
 	Text     string `json:"text"`
 	Category string `json:"category"`
 }
 
 type (
 	MemoService interface {
-		FindAllMemoByUserAndBookID(userID string, bookID uint64) ([]entity.Memo, error)
+		FindAllMemoByUserAndBookID(userID string, bookID uint) ([]entity.Memo, error)
 		CreateMemo(param CreateMemoParam) (entity.Memo, error)
 	}
 	memoService struct {
-		db config.Database
+		memoRepository repository.MemoRepository
+		userRepository repository.UserRepository
 	}
 )
 
-func NewMemoService(db config.Database) MemoService {
-	return memoService{db}
+func NewMemoService(mr repository.MemoRepository, ur repository.UserRepository) MemoService {
+	return memoService{mr, ur}
 }
 
-func (m memoService) FindAllMemoByUserAndBookID(userID string, bookID uint64) ([]entity.Memo, error) {
-	memos := []entity.Memo{}
-
-	user := entity.User{}
-	res := m.db.Where("uid = ?", userID).First(&user)
-
-	if res.Error != nil || res.RowsAffected == 0 {
-		return memos, errors.New("User not found")
+func (m memoService) FindAllMemoByUserAndBookID(userID string, bookID uint) (memos []entity.Memo, err error) {
+	// TODO: user repository -> find user by uid
+	user, err := m.userRepository.FindUserByUID(userID)
+	if err != nil {
+		return
 	}
-
-	res = m.db.Where("book_id = ? AND user_id = ?", bookID, user.ID).Find(&memos)
-	if res.Error != nil || res.RowsAffected == 0 {
-		return memos, errors.New("Memo not found")
-	}
-
-	return memos, nil
+	memos, err = m.memoRepository.FindAllMemoByUserAndBookID(user.ID, bookID)
+	return
 }
 
-func (m memoService) CreateMemo(param CreateMemoParam) (entity.Memo, error) {
-	user := entity.User{}
-	memo := entity.Memo{
-		BookID:   param.BookID,
-		Text:     param.Text,
-		Category: param.Category,
-	}
-	res := m.db.Where("uid = ?", param.UserID).First(&user)
-	if res.Error != nil {
-		return memo, res.Error
+func (m memoService) CreateMemo(param CreateMemoParam) (memo entity.Memo, err error) {
+	user, err := m.userRepository.FindUserByUID(param.UserID)
+	if err != nil {
+		return
 	}
 
-	if res.RowsAffected == 0 {
-		return memo, errors.New("User not found")
-	}
-
-	memo.UserID = uint64(user.ID)
-
-	res = m.db.Create(&memo)
-	if res.Error != nil || res.RowsAffected == 0 {
-		return memo, errors.New("Memo creation failed")
-	}
-
-	return memo, nil
+	memo, err = m.memoRepository.CreateMemo(user.ID, param.BookID, param.Text, param.Category)
+	return
 }

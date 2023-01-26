@@ -35,8 +35,8 @@ func NewBookRepository(db config.Database) BookRepository {
 	return bookRepository{db}
 }
 
-func (b bookRepository) CreateBook(params CreateBookParams) (entity.Book, error) {
-	book := entity.Book{
+func (b bookRepository) CreateBook(params CreateBookParams) (book entity.Book, err error) {
+	book = entity.Book{
 		Title:       params.Title,
 		Author:      params.Author,
 		ShopLink:    params.ShopLink,
@@ -50,57 +50,61 @@ func (b bookRepository) CreateBook(params CreateBookParams) (entity.Book, error)
 	res := b.db.Where("isbn = ?", book.ISBN).FirstOrCreate(&book)
 
 	if res.Error != nil || res.RowsAffected == 0 {
-		return book, errors.New("Book creation failed")
+		err = errors.New("Book creation failed")
+		return
 	}
 
 	user := entity.User{}
 	res = b.db.Where("uid = ?", params.UserID).First(&user)
 
 	if res.Error != nil || res.RowsAffected == 0 {
-		return book, errors.New("User not found")
+		err = errors.New("User not found")
+		return
 	}
 
 	userBooks := entity.UserBooks{
-		UserID: uint64(user.ID),
-		BookID: uint64(book.ID),
+		UserID: user.ID,
+		BookID: book.ID,
 	}
 
 	res = b.db.Create(&userBooks)
 	if res.Error != nil || res.RowsAffected == 0 {
-		return book, errors.New("Book creation failed")
+		err = errors.New("Book creation failed")
+		return
 	}
-
-	return book, nil
+	return
 }
 
-func (b bookRepository) FindAllBooks(userID string) ([]entity.Book, error) {
+func (b bookRepository) FindAllBooks(userID string) (books []entity.Book, err error) {
 	user := entity.User{}
 	res := b.db.Where("uid = ?", userID).First(&user)
-	books := []entity.Book{}
+	books = []entity.Book{}
 
 	if res.Error != nil || res.RowsAffected == 0 {
-		return books, errors.New("User not found")
+		err = errors.New("User not found")
+		return
 	}
 
-	err := b.db.Model(&user).Where("user_id = ?", user.ID).Association("Books").Find(&books)
+	err = b.db.Model(&user).Where("user_id = ?", user.ID).Association("Books").Find(&books)
 	if err != nil {
-		return books, errors.New("Books not found")
+		err = errors.New("Books not found")
+		return
 	}
-
-	return books, nil
+	return
 }
 
-func (b bookRepository) FindBookByISBN(ISBN string) (entity.Book, error) {
-	book := entity.Book{}
+func (b bookRepository) FindBookByISBN(ISBN string) (book entity.Book, err error) {
+	book = entity.Book{}
 	res := b.db.Where("isbn = ?", ISBN).First(&book)
 
 	if res.Error != nil {
-		return book, res.Error
+		err = res.Error
+		return
 	}
 
 	if res.RowsAffected == 0 {
-		return book, errors.New("Book not found")
+		err = errors.New("Book not found")
+		return
 	}
-
-	return book, nil
+	return
 }

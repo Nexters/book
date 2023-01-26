@@ -3,8 +3,8 @@ package entity
 import "time"
 
 type UserBooks struct {
-	UserID    uint64    `gorm:"primaryKey" json:"userId"`
-	BookID    uint64    `gorm:"primaryKey" json:"bookId"`
+	UserID    uint      `gorm:"primaryKey" json:"userId"`
+	BookID    uint      `gorm:"primaryKey" json:"bookId"`
 	StartedAt time.Time `gorm:"column:started_at" json:"startedAt"`
 	UpdatedAt time.Time `gorm:"column:updated_at" json:"updatedAt"`
 	DoneAt    time.Time `gorm:"column:done_at" json:"doneAt"`
