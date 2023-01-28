@@ -34,8 +34,8 @@ func NewBookController(s search.BookSearch, svc service.BookService) BookControl
 }
 
 // @Tags         book
-// @Summary Find all books
-// @Description Find all books by userId
+// @Summary 사용자가 등록한 모든 책을 조회하는 API
+// @Description 사용자가 등록한 모든 책을 조회하는 API. TODO: 읽을책/완독 구분해 가져오게 할 예정
 // @Accept json
 // @Produce json
 // @Param userId query string true "abcd-efgh-1234"
@@ -79,7 +79,7 @@ func (b bookController) FindBookByISBN(c echo.Context) error {
 // @Produce json
 // @Param title query string true "미움받을 용기"
 // @Success 200 {object} []search.SearchItem
-// @Router /books [get]
+// @Router /books/search [get]
 func (b bookController) Search(c echo.Context) error {
 	title := c.QueryParam("title")
 	res, err := b.bookSearch.SearchBookByTitle(title)
@@ -97,7 +97,7 @@ func (b bookController) Search(c echo.Context) error {
 // @Produce json
 // @Param request body CreateBookParam true "CreateBookParam{}"
 // @Success 201 {object} entity.Book
-// @Router /books/search [post]
+// @Router /books [post]
 func (b bookController) CreateBook(c echo.Context) error {
 	bookParam := CreateBookParam{}
 	if err := c.Bind(&bookParam); err != nil {

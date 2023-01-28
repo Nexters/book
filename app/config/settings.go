@@ -9,7 +9,8 @@ import (
 
 type Settings struct {
 	App struct {
-		Port int `env:"PORT" json:"port"`
+		Port     int    `env:"PORT" json:"port"`
+		API_HOST string `env:"API_HOST"`
 	}
 	Database struct {
 		User     string `env:"DATABASE_USER"`

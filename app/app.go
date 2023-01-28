@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/nexters/book/docs"
 	echoSwagger "github.com/swaggo/echo-swagger"
 
 	"github.com/labstack/echo/v4"
@@ -51,7 +52,9 @@ func RegisterHooks(
 					AllowOrigins: []string{"http://localhost:3030", "http://localhost:3000"},
 					AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 				}))
+
 				bindRoute(e, c)
+				configureSwagger(settings)
 
 				if err := db.AutoMigrate(&entity.User{}, &entity.Book{}, &entity.UserBooks{}, &entity.Memo{}); err != nil {
 					log.Fatal(err)
@@ -68,6 +71,14 @@ func RegisterHooks(
 			return e.Shutdown(ctx)
 		},
 	})
+}
+
+func configureSwagger(settings *config.Settings) {
+	docs.SwaggerInfo.Title = "Book API 문서"
+	docs.SwaggerInfo.Description = "독서기록 작성 서비스 API 문서"
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = settings.App.API_HOST
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 }
 
 var Modules = fx.Module(

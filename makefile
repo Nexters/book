@@ -32,3 +32,10 @@ sast:
 	@mkdir -p .public/sast
 	@gosec -fmt=html -out=.public/sast/index.html ./...; gosec -fmt=json -out=.public/sast/results.json ./...; 
 	@gosec ./...
+.PHONY: sast
+
+# Update Swagger
+docs:
+	@swag init --parseDependency --parseInternal
+.PHONY: docs
+

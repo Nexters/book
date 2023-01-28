@@ -18,7 +18,7 @@ const docTemplate = `{
     "paths": {
         "/books": {
             "get": {
-                "description": "Naver API를 이용해 책을 검색하게 하는 API query string으로 title을 넘기면 검색 결과를 반환.",
+                "description": "사용자가 등록한 모든 책을 조회하는 API. TODO: 읽을책/완독 구분해 가져오게 할 예정",
                 "consumes": [
                     "application/json"
                 ],
@@ -28,12 +28,12 @@ const docTemplate = `{
                 "tags": [
                     "book"
                 ],
-                "summary": "책 검색 API",
+                "summary": "사용자가 등록한 모든 책을 조회하는 API",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "미움받을 용기",
-                        "name": "title",
+                        "description": "abcd-efgh-1234",
+                        "name": "userId",
                         "in": "query",
                         "required": true
                     }
@@ -44,7 +44,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/search.SearchItem"
+                                "$ref": "#/definitions/entity.Book"
                             }
                         }
                     }
@@ -78,6 +78,41 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/entity.Book"
+                        }
+                    }
+                }
+            }
+        },
+        "/books/search": {
+            "get": {
+                "description": "Naver API를 이용해 책을 검색하게 하는 API query string으로 title을 넘기면 검색 결과를 반환.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "book"
+                ],
+                "summary": "책 검색 API",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "미움받을 용기",
+                        "name": "title",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/search.SearchItem"
+                            }
                         }
                     }
                 }
