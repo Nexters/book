@@ -38,3 +38,10 @@ DATABASE_NAME=
 ```
 make run
 ```
+
+
+### Update Open API
+(Swagger)
+```
+make docs
+```

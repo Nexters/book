@@ -120,12 +120,11 @@ paths:
     get:
       consumes:
       - application/json
-      description: Naver API를 이용해 책을 검색하게 하는 API query string으로 title을 넘기면 검색 결과를
-        반환.
+      description: '사용자가 등록한 모든 책을 조회하는 API. TODO: 읽을책/완독 구분해 가져오게 할 예정'
       parameters:
-      - description: 미움받을 용기
+      - description: abcd-efgh-1234
         in: query
-        name: title
+        name: userId
         required: true
         type: string
       produces:
@@ -135,9 +134,9 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/search.SearchItem'
+              $ref: '#/definitions/entity.Book'
             type: array
-      summary: 책 검색 API
+      summary: 사용자가 등록한 모든 책을 조회하는 API
       tags:
       - book
     post:
@@ -180,6 +179,30 @@ paths:
           schema:
             $ref: '#/definitions/entity.Book'
       summary: ISBN으로 책 조회 API
+      tags:
+      - book
+  /books/search:
+    get:
+      consumes:
+      - application/json
+      description: Naver API를 이용해 책을 검색하게 하는 API query string으로 title을 넘기면 검색 결과를
+        반환.
+      parameters:
+      - description: 미움받을 용기
+        in: query
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/search.SearchItem'
+            type: array
+      summary: 책 검색 API
       tags:
       - book
   /memos:
