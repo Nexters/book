@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.2](https://github.com/Nexters/book/compare/v0.5.1...v0.5.2) (2023-01-28)
+
+
+### Bug Fixes
+
+* swagger endpoint mismatch fixed ([50a5e30](https://github.com/Nexters/book/commit/50a5e30e266810e1cf2a57476c3f4ca0b76d58c4))
+
 ## [0.5.1](https://github.com/Nexters/book/compare/v0.5.0...v0.5.1) (2023-01-25)
 
 
