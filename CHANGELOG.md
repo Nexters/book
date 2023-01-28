@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.3](https://github.com/Nexters/book/compare/v0.5.2...v0.5.3) (2023-01-28)
+
+
+### Bug Fixes
+
+* api host 변경 ([cbf7f5f](https://github.com/Nexters/book/commit/cbf7f5fca5bc6d63d1b8d7abd50a1e475c3dbf30))
+* 잘못된 swagger 문서 주석 수정정 ([f184d3a](https://github.com/Nexters/book/commit/f184d3a2f292d253ab3531ee6878a5407ad39f42))
+
 ## [0.5.2](https://github.com/Nexters/book/compare/v0.5.1...v0.5.2) (2023-01-28)
 
 
