@@ -97,7 +97,7 @@ func (b bookController) Search(c echo.Context) error {
 // @Produce json
 // @Param request body CreateBookParam true "CreateBookParam{}"
 // @Success 201 {object} entity.Book
-// @Router /books [post]
+// @Router /books/search [post]
 func (b bookController) CreateBook(c echo.Context) error {
 	bookParam := CreateBookParam{}
 	if err := c.Bind(&bookParam); err != nil {
