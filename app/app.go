@@ -30,7 +30,7 @@ func bindRoute(e *echo.Echo, c Controller) {
 	b.GET("/:isbn", c.Book.FindBookByISBN)
 	b.GET("/search", c.Book.Search)
 	b.POST("", c.Book.CreateBook)
-	u.POST("", c.User.CreateUser)
+	u.GET("", c.User.CreateUser)
 	m.GET("", c.Memo.FindAllMemoByUserAndBookID)
 	m.POST("", c.Memo.CreateMemo)
 }

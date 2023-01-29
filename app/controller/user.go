@@ -26,13 +26,13 @@ func NewUserController(r repository.UserRepository) UserController {
 // @Description API를 호출하면 UUID를 발급함. local storage에 저장해두고 userId로 사용하면 됨.
 // @Accept json
 // @Produce json
-// @Success 201 {object} entity.User
-// @Router /user [post]
+// @Success 200 {object} entity.User
+// @Router /user [get]
 func (u userController) CreateUser(c echo.Context) error {
 	user, err := u.repo.CreateUser()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
-	return c.JSON(http.StatusCreated, user)
+	return c.JSON(http.StatusOK, user)
 }
