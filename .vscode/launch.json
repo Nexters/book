@@ -5,7 +5,7 @@
       "type": "go",
       "request": "launch",
       "mode": "auto",
-      "args": ["--port", "8082"],
+      "args": ["--port", "8080"],
       "program": "${workspaceFolder}",
       "envFile": "${workspaceFolder}/.env"
     }

@@ -32,9 +32,9 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "abcd-efgh-1234",
-                        "name": "userId",
-                        "in": "query",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -63,6 +63,13 @@ const docTemplate = `{
                 ],
                 "summary": "읽을 책을 등록하는 API",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "CreateBookParam{}",
                         "name": "request",
@@ -134,6 +141,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "12345678",
                         "name": "bookId",
                         "in": "path",
@@ -166,9 +180,9 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "aaaa-bbbb-cccc",
-                        "name": "userId",
-                        "in": "query",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     },
                     {
@@ -205,6 +219,13 @@ const docTemplate = `{
                 "summary": "메모 추가 API",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "service.CreateMemoParam{}",
                         "name": "body",
                         "in": "body",
@@ -224,9 +245,41 @@ const docTemplate = `{
                 }
             }
         },
-        "/user": {
-            "post": {
-                "description": "API를 호출하면 UUID를 발급함. local storage에 저장해두고 userId로 사용하면 됨.",
+        "/users": {
+            "get": {
+                "description": "Authorization header의 bearer token을 이용해 사용자를 조회함",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "사용자 조회 API",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/token": {
+            "get": {
+                "description": "API를 호출하면 UUID를 token으로 발급함. local storage에 저장해두고 userId로 사용하면 됨.",
                 "consumes": [
                     "application/json"
                 ],
@@ -238,8 +291,8 @@ const docTemplate = `{
                 ],
                 "summary": "사용자 추가 API",
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/entity.User"
                         }
@@ -256,9 +309,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
-                    "type": "string"
-                },
-                "userId": {
                     "type": "string"
                 }
             }
@@ -416,9 +466,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "text": {
-                    "type": "string"
-                },
-                "userId": {
                     "type": "string"
                 }
             }

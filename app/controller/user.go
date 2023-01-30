@@ -2,37 +2,76 @@ package controller
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo/v4"
+	"github.com/nexters/book/app/auth"
 	"github.com/nexters/book/app/repository"
 	_ "github.com/nexters/book/docs"
 )
 
 type (
 	UserController interface {
-		CreateUser(c echo.Context) error
+		CreateUserAndToken(c echo.Context) error
+		FindUser(c echo.Context) error
 	}
 	userController struct {
 		repo repository.UserRepository
+		auth auth.BearerAuth
 	}
 )
 
-func NewUserController(r repository.UserRepository) UserController {
-	return userController{r}
+func NewUserController(r repository.UserRepository, auth auth.BearerAuth) UserController {
+	return userController{r, auth}
+}
+
+type AuthHeader struct {
+	Authorization string `header:"Authorization"`
+}
+
+func getToken(auth string) (token string, err error) {
+	//validation
+	token = strings.Split(auth, " ")[1]
+
+	return
 }
 
 // @Tags         user
 // @Summary 사용자 추가 API
-// @Description API를 호출하면 UUID를 발급함. local storage에 저장해두고 userId로 사용하면 됨.
+// @Description API를 호출하면 UUID를 token으로 발급함. local storage에 저장해두고 userId로 사용하면 됨.
 // @Accept json
 // @Produce json
-// @Success 201 {object} entity.User
-// @Router /user [post]
-func (u userController) CreateUser(c echo.Context) error {
+// @Success 200 {object} entity.User
+// @Router /users/token [get]
+func (u userController) CreateUserAndToken(c echo.Context) error {
 	user, err := u.repo.CreateUser()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
-	return c.JSON(http.StatusCreated, user)
+	return c.JSON(http.StatusOK, user)
+}
+
+// @Tags         user
+// @Summary 사용자 조회 API
+// @Description Authorization header의 bearer token을 이용해 사용자를 조회함
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
+// @Success 200 {object} entity.User
+// @Router /users [get]
+func (u userController) FindUser(c echo.Context) error {
+	token, err := u.auth.GetToken(c)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, err)
+	}
+
+	user, err := u.repo.FindUserByUID(token)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, "User not found")
+	}
+
+	return c.JSON(http.StatusOK, user)
 }

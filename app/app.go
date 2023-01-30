@@ -10,6 +10,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/nexters/book/app/auth"
 	"github.com/nexters/book/app/config"
 	"github.com/nexters/book/app/entity"
 	_ "github.com/nexters/book/docs"
@@ -17,7 +18,7 @@ import (
 	"go.uber.org/fx"
 )
 
-func bindRoute(e *echo.Echo, c Controller) {
+func bindRoute(e *echo.Echo, c Controller, ba auth.BearerAuth) {
 	e.GET("", func(c echo.Context) error {
 		return c.String(http.StatusOK, "ok")
 	})
@@ -26,13 +27,14 @@ func bindRoute(e *echo.Echo, c Controller) {
 	b := e.Group("/books")
 	u := e.Group("/users")
 	m := e.Group("/memos")
-	b.GET("", c.Book.FetchAll)
-	b.GET("/:isbn", c.Book.FindBookByISBN)
+	b.GET("", c.Book.FetchAll, ba.ValidateBearerHeader)
+	b.GET("/:isbn", c.Book.FindBookByISBN, ba.ValidateBearerHeader)
 	b.GET("/search", c.Book.Search)
-	b.POST("", c.Book.CreateBook)
-	u.POST("", c.User.CreateUser)
-	m.GET("", c.Memo.FindAllMemoByUserAndBookID)
-	m.POST("", c.Memo.CreateMemo)
+	b.POST("", c.Book.CreateBook, ba.ValidateBearerHeader)
+	u.GET("/token", c.User.CreateUserAndToken)
+	u.GET("", c.User.FindUser, ba.ValidateBearerHeader)
+	m.GET("", c.Memo.FindAllMemoByUserAndBookID, ba.ValidateBearerHeader)
+	m.POST("", c.Memo.CreateMemo, ba.ValidateBearerHeader)
 }
 
 func RegisterHooks(
@@ -41,6 +43,7 @@ func RegisterHooks(
 	settings *config.Settings,
 	db config.Database,
 	c Controller,
+	ba auth.BearerAuth,
 ) {
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
@@ -53,7 +56,7 @@ func RegisterHooks(
 					AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 				}))
 
-				bindRoute(e, c)
+				bindRoute(e, c, ba)
 				configureSwagger(settings)
 
 				if err := db.AutoMigrate(&entity.User{}, &entity.Book{}, &entity.UserBooks{}, &entity.Memo{}); err != nil {
@@ -84,9 +87,10 @@ func configureSwagger(settings *config.Settings) {
 var Modules = fx.Module(
 	"app",
 	fx.Provide(config.NewSettings, echo.New, search.NewBookSearch),
-	fx.Options(config.DBModule),
-	fx.Options(ControllerModule),
-	fx.Options(RepositoryModule),
-	fx.Options(ServiceModule),
+	config.DBModule,
+	ControllerModule,
+	RepositoryModule,
+	ServiceModule,
+	auth.BearerAuthModuole,
 	fx.Invoke(RegisterHooks),
 )

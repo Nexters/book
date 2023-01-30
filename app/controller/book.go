@@ -6,14 +6,14 @@ import (
 
 	"github.com/labstack/echo/v4"
 
+	"github.com/nexters/book/app/auth"
 	"github.com/nexters/book/app/service"
 	"github.com/nexters/book/external/search"
 )
 
 type CreateBookParam struct {
-	ISBN   string `json:"ISBN"`
-	Title  string `json:"title"`
-	UserID string `json:"userId"`
+	ISBN  string `json:"ISBN"`
+	Title string `json:"title"`
 }
 
 type (
@@ -26,11 +26,12 @@ type (
 	bookController struct {
 		bookSearch  search.BookSearch
 		bookService service.BookService
+		auth        auth.BearerAuth
 	}
 )
 
-func NewBookController(s search.BookSearch, svc service.BookService) BookController {
-	return bookController{s, svc}
+func NewBookController(s search.BookSearch, svc service.BookService, auth auth.BearerAuth) BookController {
+	return bookController{s, svc, auth}
 }
 
 // @Tags         book
@@ -38,14 +39,16 @@ func NewBookController(s search.BookSearch, svc service.BookService) BookControl
 // @Description 사용자가 등록한 모든 책을 조회하는 API. TODO: 읽을책/완독 구분해 가져오게 할 예정
 // @Accept json
 // @Produce json
-// @Param userId query string true "abcd-efgh-1234"
+// @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
 // @Success 200 {object} []entity.Book
 // @Router /books [get]
 func (b bookController) FetchAll(c echo.Context) error {
+	token, err := b.auth.GetToken(c)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, err)
+	}
 
-	userId := c.QueryParam("userId")
-
-	books, err := b.bookService.FindAllBooks(userId)
+	books, err := b.bookService.FindAllBooks(token)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
@@ -59,6 +62,7 @@ func (b bookController) FetchAll(c echo.Context) error {
 // @Description ISBN으로 책의 상세 내용을 조회하는 API
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
 // @Param bookId path string true "12345678"
 // @Success 200 {object} entity.Book
 // @Router /books/{bookId} [get]
@@ -95,16 +99,22 @@ func (b bookController) Search(c echo.Context) error {
 // @Description 책의 ISBN, 제목, userId를 body로 제공하면 읽을책으로 등록하는 API
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
 // @Param request body CreateBookParam true "CreateBookParam{}"
 // @Success 201 {object} entity.Book
 // @Router /books [post]
 func (b bookController) CreateBook(c echo.Context) error {
+	token, err := b.auth.GetToken(c)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, err)
+	}
+
 	bookParam := CreateBookParam{}
 	if err := c.Bind(&bookParam); err != nil {
 		return c.String(http.StatusBadRequest, "Provide IBSN and book title correctly")
 	}
 
-	res, err := b.bookService.CreateBook(bookParam.Title, bookParam.ISBN, bookParam.UserID)
+	res, err := b.bookService.CreateBook(bookParam.Title, bookParam.ISBN, token)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
