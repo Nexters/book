@@ -32,16 +32,9 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Bearer",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
                         "name": "Authorization",
                         "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "abcd-efgh-1234",
-                        "name": "userId",
-                        "in": "query",
                         "required": true
                     }
                 ],
@@ -70,6 +63,13 @@ const docTemplate = `{
                 ],
                 "summary": "읽을 책을 등록하는 API",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "CreateBookParam{}",
                         "name": "request",
@@ -141,6 +141,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "12345678",
                         "name": "bookId",
                         "in": "path",
@@ -173,9 +180,9 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "aaaa-bbbb-cccc",
-                        "name": "userId",
-                        "in": "query",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     },
                     {
@@ -212,6 +219,13 @@ const docTemplate = `{
                 "summary": "메모 추가 API",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "service.CreateMemoParam{}",
                         "name": "body",
                         "in": "body",
@@ -247,7 +261,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Bearer",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
                         "name": "Authorization",
                         "in": "header",
                         "required": true
@@ -295,9 +309,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "title": {
-                    "type": "string"
-                },
-                "userId": {
                     "type": "string"
                 }
             }
@@ -455,9 +466,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "text": {
-                    "type": "string"
-                },
-                "userId": {
                     "type": "string"
                 }
             }

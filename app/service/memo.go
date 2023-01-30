@@ -6,7 +6,6 @@ import (
 )
 
 type CreateMemoParam struct {
-	UserID   string `json:"userId"`
 	BookID   uint   `json:"bookId"`
 	Text     string `json:"text"`
 	Category string `json:"category"`
@@ -15,7 +14,7 @@ type CreateMemoParam struct {
 type (
 	MemoService interface {
 		FindAllMemoByUserAndBookID(userID string, bookID uint) ([]entity.Memo, error)
-		CreateMemo(param CreateMemoParam) (entity.Memo, error)
+		CreateMemo(param CreateMemoParam, uid string) (entity.Memo, error)
 	}
 	memoService struct {
 		memoRepository repository.MemoRepository
@@ -28,17 +27,17 @@ func NewMemoService(mr repository.MemoRepository, ur repository.UserRepository) 
 }
 
 func (m memoService) FindAllMemoByUserAndBookID(userID string, bookID uint) (memos []entity.Memo, err error) {
-	// TODO: user repository -> find user by uid
 	user, err := m.userRepository.FindUserByUID(userID)
 	if err != nil {
 		return
 	}
+
 	memos, err = m.memoRepository.FindAllMemoByUserAndBookID(user.ID, bookID)
 	return
 }
 
-func (m memoService) CreateMemo(param CreateMemoParam) (memo entity.Memo, err error) {
-	user, err := m.userRepository.FindUserByUID(param.UserID)
+func (m memoService) CreateMemo(param CreateMemoParam, uid string) (memo entity.Memo, err error) {
+	user, err := m.userRepository.FindUserByUID(uid)
 	if err != nil {
 		return
 	}

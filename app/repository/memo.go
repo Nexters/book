@@ -49,7 +49,7 @@ func (m memoRepository) CreateMemo(
 func (m memoRepository) FindAllMemoByUserAndBookID(userID uint, bookID uint) (memos []entity.Memo, err error) {
 	memos = []entity.Memo{}
 
-	if res := m.db.Where("book_id ? AND user_id = ?", bookID, userID); res.Error != nil {
+	if res := m.db.Where("book_id = ? AND user_id = ?", bookID, userID).Find(&memos); res.Error != nil {
 		err = res.Error
 		return
 	}

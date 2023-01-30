@@ -5,8 +5,6 @@ definitions:
         type: string
       title:
         type: string
-      userId:
-        type: string
     type: object
   entity.Book:
     properties:
@@ -110,8 +108,6 @@ definitions:
         type: string
       text:
         type: string
-      userId:
-        type: string
     type: object
 info:
   contact: {}
@@ -122,14 +118,9 @@ paths:
       - application/json
       description: '사용자가 등록한 모든 책을 조회하는 API. TODO: 읽을책/완독 구분해 가져오게 할 예정'
       parameters:
-      - description: Bearer
+      - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
         in: header
         name: Authorization
-        required: true
-        type: string
-      - description: abcd-efgh-1234
-        in: query
-        name: userId
         required: true
         type: string
       produces:
@@ -149,6 +140,11 @@ paths:
       - application/json
       description: 책의 ISBN, 제목, userId를 body로 제공하면 읽을책으로 등록하는 API
       parameters:
+      - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: CreateBookParam{}
         in: body
         name: request
@@ -171,6 +167,11 @@ paths:
       - application/json
       description: ISBN으로 책의 상세 내용을 조회하는 API
       parameters:
+      - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: "12345678"
         in: path
         name: bookId
@@ -217,9 +218,9 @@ paths:
       description: 특정 사용자가 특정 책에 대해 작성한 모든 메모를 가져오는 API. query string으로 userId와 bookId를
         넘기면 됨.
       parameters:
-      - description: aaaa-bbbb-cccc
-        in: query
-        name: userId
+      - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
+        in: header
+        name: Authorization
         required: true
         type: string
       - description: "2"
@@ -244,6 +245,11 @@ paths:
       - application/json
       description: 특정 사용자가 특정 책에 대해 메모를 작성하는 API
       parameters:
+      - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: service.CreateMemoParam{}
         in: body
         name: body
@@ -266,7 +272,7 @@ paths:
       - application/json
       description: Authorization header의 bearer token을 이용해 사용자를 조회함
       parameters:
-      - description: Bearer
+      - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
         in: header
         name: Authorization
         required: true

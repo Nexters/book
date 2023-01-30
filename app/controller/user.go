@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/labstack/echo/v4"
+	"github.com/nexters/book/app/auth"
 	"github.com/nexters/book/app/repository"
 	_ "github.com/nexters/book/docs"
 )
@@ -16,11 +17,12 @@ type (
 	}
 	userController struct {
 		repo repository.UserRepository
+		auth auth.BearerAuth
 	}
 )
 
-func NewUserController(r repository.UserRepository) UserController {
-	return userController{r}
+func NewUserController(r repository.UserRepository, auth auth.BearerAuth) UserController {
+	return userController{r, auth}
 }
 
 type AuthHeader struct {
@@ -59,16 +61,17 @@ func (u userController) CreateUserAndToken(c echo.Context) error {
 // @Success 200 {object} entity.User
 // @Router /users [get]
 func (u userController) FindUser(c echo.Context) error {
-	// h := AuthHeader{}
-	// binder := new(echo.DefaultBinder)
-	// binder.BindHeaders(c, &h)
+	token, err := u.auth.GetToken(c)
 
-	// token, err := getToken(h.Authorization)
-	// if err != nil {
-	// 	return echo.NewHTTPError(http.StatusUnauthorized, err)
-	// }
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, err)
+	}
 
-	// fmt.Println(token)
+	user, err := u.repo.FindUserByUID(token)
 
-	return c.JSON(http.StatusOK, "ok")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, "User not found")
+	}
+
+	return c.JSON(http.StatusOK, user)
 }
