@@ -26,7 +26,7 @@ func NewBearerAuth() BearerAuth {
 	return bearerAuth{}
 }
 
-// middleware
+// ValidateBearerHeader middleware
 func (b bearerAuth) ValidateBearerHeader(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		binder := new(echo.DefaultBinder)

@@ -27,6 +27,7 @@ func NewMemoController(ms service.MemoService) MemoController {
 // @Description 특정 사용자가 특정 책에 대해 작성한 모든 메모를 가져오는 API. query string으로 userId와 bookId를 넘기면 됨.
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
 // @Param userId query string true "aaaa-bbbb-cccc"
 // @Param bookId query string true "2"
 // @Success 200 {object} []entity.Memo
@@ -53,6 +54,7 @@ func (m memoController) FindAllMemoByUserAndBookID(c echo.Context) error {
 // @Description 특정 사용자가 특정 책에 대해 메모를 작성하는 API
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
 // @Param body body service.CreateMemoParam true "service.CreateMemoParam{}"
 // @Success 201 {object} entity.Memo
 // @Router /memos [post]

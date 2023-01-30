@@ -32,6 +32,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "abcd-efgh-1234",
                         "name": "userId",
                         "in": "query",
@@ -224,9 +231,41 @@ const docTemplate = `{
                 }
             }
         },
-        "/user": {
-            "post": {
-                "description": "API를 호출하면 UUID를 발급함. local storage에 저장해두고 userId로 사용하면 됨.",
+        "/users": {
+            "get": {
+                "description": "Authorization header의 bearer token을 이용해 사용자를 조회함",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "사용자 조회 API",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/token": {
+            "get": {
+                "description": "API를 호출하면 UUID를 token으로 발급함. local storage에 저장해두고 userId로 사용하면 됨.",
                 "consumes": [
                     "application/json"
                 ],
@@ -238,8 +277,8 @@ const docTemplate = `{
                 ],
                 "summary": "사용자 추가 API",
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/entity.User"
                         }
