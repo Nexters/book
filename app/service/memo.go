@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/nexters/book/app/entity"
 	"github.com/nexters/book/app/repository"
 )
@@ -11,6 +13,8 @@ type CreateMemoParam struct {
 	Text     string `json:"text" validate:"required"`
 	Category string `json:"category" validate:"required"`
 }
+
+var MaxLenError = errors.New("Max character count is 150; length exceeded")
 
 type (
 	// MemoService MemoService Interface
@@ -46,6 +50,11 @@ func (m memoService) FindAllMemoByUserAndBookID(userID string, bookID uint) (mem
 func (m memoService) CreateMemo(param CreateMemoParam, uid string) (memo entity.Memo, err error) {
 	user, err := m.userRepository.FindUserByUID(uid)
 	if err != nil {
+		return
+	}
+
+	if len(memo.Text) > 150 {
+		err = MaxLenError
 		return
 	}
 

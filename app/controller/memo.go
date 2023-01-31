@@ -74,7 +74,7 @@ func (m memoController) CreateMemo(c echo.Context) error {
 
 	param := service.CreateMemoParam{}
 	if err := c.Bind(&param); err != nil {
-		return c.String(http.StatusBadRequest, "Bad request, check request body")
+		return echo.NewHTTPError(http.StatusBadRequest, "Bad request, check request body")
 	}
 
 	if err := c.Validate(param); err != nil {
@@ -83,7 +83,10 @@ func (m memoController) CreateMemo(c echo.Context) error {
 
 	memo, err := m.memoService.CreateMemo(param, token)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		if err == service.MaxLenError {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
 	return c.JSON(http.StatusCreated, memo)

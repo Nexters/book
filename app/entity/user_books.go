@@ -11,5 +11,5 @@ type UserBooks struct {
 	DoneAt    time.Time `gorm:"column:done_at" json:"doneAt"`
 	DeletedAt time.Time `gorm:"column:deleted_at" json:"deletedAt"`
 	// Memos     []Memo    `gorm:"memos" json:"memos"`
-	Done bool `gorm:"done;default:false" json:"done"`
+	IsReading bool `gorm:"column:is_reading;default:true" json:"isReading"`
 }
