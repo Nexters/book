@@ -2,7 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/nexters/book/app/auth"
@@ -11,29 +10,22 @@ import (
 )
 
 type (
+	// UserController UserController Interface
 	UserController interface {
 		CreateUserAndToken(c echo.Context) error
 		FindUser(c echo.Context) error
 	}
+
+	// userController userController Struct
 	userController struct {
 		repo repository.UserRepository
 		auth auth.BearerAuth
 	}
 )
 
+// NewUserController 생성자
 func NewUserController(r repository.UserRepository, auth auth.BearerAuth) UserController {
 	return userController{r, auth}
-}
-
-type AuthHeader struct {
-	Authorization string `header:"Authorization"`
-}
-
-func getToken(auth string) (token string, err error) {
-	//validation
-	token = strings.Split(auth, " ")[1]
-
-	return
 }
 
 // @Tags         user

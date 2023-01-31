@@ -2,6 +2,7 @@ package entity
 
 import "gorm.io/gorm"
 
+// Memo memo entity
 type Memo struct {
 	gorm.Model
 	UserID   uint   `gorm:"foreignKey" json:"userId"`

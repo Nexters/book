@@ -10,16 +10,20 @@ import (
 )
 
 type (
+	// MemoController MemoController Interface
 	MemoController interface {
 		FindAllMemoByUserAndBookID(c echo.Context) error
 		CreateMemo(c echo.Context) error
 	}
+
+	// memoController memoController Struct
 	memoController struct {
 		memoService service.MemoService
 		auth        auth.BearerAuth
 	}
 )
 
+// NewMemoController 생성자
 func NewMemoController(ms service.MemoService, auth auth.BearerAuth) MemoController {
 	return memoController{ms, auth}
 }

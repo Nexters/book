@@ -10,12 +10,14 @@ import (
 	"go.uber.org/fx"
 )
 
+// Controller 컨트롤러 구조체
 type Controller struct {
 	Book c.BookController
 	User c.UserController
 	Memo c.MemoController
 }
 
+// NewController 생성자
 func NewController(
 	book c.BookController,
 	user c.UserController,
@@ -23,6 +25,8 @@ func NewController(
 ) Controller {
 	return Controller{book, user, memo}
 }
+
+// bindRoute 라우팅
 func bindRoute(e *echo.Echo, c Controller, ba auth.BearerAuth) {
 	e.GET("", func(c echo.Context) error {
 		return c.String(http.StatusOK, "ok")
@@ -42,6 +46,7 @@ func bindRoute(e *echo.Echo, c Controller, ba auth.BearerAuth) {
 	m.POST("", c.Memo.CreateMemo, ba.ValidateBearerHeader)
 }
 
+// ControllerModule 컨트롤러
 var ControllerModule = fx.Module(
 	"controller",
 	fx.Provide(

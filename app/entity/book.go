@@ -2,6 +2,7 @@ package entity
 
 import "gorm.io/gorm"
 
+// Book book entity
 type Book struct {
 	gorm.Model
 	Title       string `gorm:"column:title" json:"title"`

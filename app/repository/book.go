@@ -9,16 +9,20 @@ import (
 
 // TODO: implement
 type (
+	// BookRepository BookRepository Interface
 	BookRepository interface {
 		CreateBook(params CreateBookParams) (entity.Book, error)
 		FindAllBooks(userID string) ([]entity.Book, error)
 		FindBookByISBN(ISBN string) (entity.Book, error)
 	}
+
+	// bookRepository bookRepository Struct
 	bookRepository struct {
 		db config.Database
 	}
 )
 
+// CreateBookParams 책 생성 parameters
 type CreateBookParams struct {
 	UserID      string `json:"userId"`
 	Title       string `json:"title"`
@@ -31,10 +35,12 @@ type CreateBookParams struct {
 	Description string `json:"description"`
 }
 
+// NewBookRepository 생성자
 func NewBookRepository(db config.Database) BookRepository {
 	return bookRepository{db}
 }
 
+// CreateBook 책 생성
 func (b bookRepository) CreateBook(params CreateBookParams) (book entity.Book, err error) {
 	book = entity.Book{
 		Title:       params.Title,
@@ -75,6 +81,7 @@ func (b bookRepository) CreateBook(params CreateBookParams) (book entity.Book, e
 	return
 }
 
+// FindAllBooks 책 조회
 func (b bookRepository) FindAllBooks(userID string) (books []entity.Book, err error) {
 	user := entity.User{}
 	res := b.db.Where("uid = ?", userID).First(&user)
@@ -93,6 +100,7 @@ func (b bookRepository) FindAllBooks(userID string) (books []entity.Book, err er
 	return
 }
 
+// FindBookByISBN ISBN으로 책 조회
 func (b bookRepository) FindBookByISBN(ISBN string) (book entity.Book, err error) {
 	book = entity.Book{}
 	res := b.db.Where("isbn = ?", ISBN).First(&book)

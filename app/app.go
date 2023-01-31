@@ -16,6 +16,7 @@ import (
 	"go.uber.org/fx"
 )
 
+// RegisterHooks 라이프사이클 훅 등록
 func RegisterHooks(
 	lifecycle fx.Lifecycle,
 	e *echo.Echo,
@@ -54,6 +55,7 @@ func RegisterHooks(
 	})
 }
 
+// configureSwagger 스웨거 설정
 func configureSwagger(settings *config.Settings) {
 	docs.SwaggerInfo.Title = "Book API 문서"
 	docs.SwaggerInfo.Description = "독서기록 작성 서비스 API 문서"
@@ -62,6 +64,7 @@ func configureSwagger(settings *config.Settings) {
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 }
 
+// Modules 메인 모듈
 var Modules = fx.Module(
 	"app",
 	fx.Provide(config.NewSettings, echo.New, search.NewBookSearch),

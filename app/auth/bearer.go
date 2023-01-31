@@ -11,17 +11,20 @@ import (
 )
 
 type (
+	// BearerAuth Bearer 기반 Authentication Interface
 	BearerAuth interface {
 		GetToken(c echo.Context) (string, error)
 		ParseToken(auth string) (string, error)
 		ValidateBearerHeader(next echo.HandlerFunc) echo.HandlerFunc
 	}
 
+	// bearerAuth Bearer 기반 Authentication Struct
 	bearerAuth struct {
-		Authorization string `header:"Authorization" validator:"required,startsWith=Bearer,"`
+		Authorization string `header:"Authorization" validate:"required,startsWith=Bearer"`
 	}
 )
 
+// NewBearerAuth 생성자
 func NewBearerAuth() BearerAuth {
 	return bearerAuth{}
 }
@@ -42,6 +45,7 @@ func (b bearerAuth) ValidateBearerHeader(next echo.HandlerFunc) echo.HandlerFunc
 	}
 }
 
+// GetToken header에서 토큰 추출
 func (b bearerAuth) GetToken(c echo.Context) (token string, err error) {
 	binder := new(echo.DefaultBinder)
 	err = binder.BindHeaders(c, &b)
@@ -56,6 +60,7 @@ func (b bearerAuth) GetToken(c echo.Context) (token string, err error) {
 	return
 }
 
+// ParseToken 토큰 파싱
 func (b bearerAuth) ParseToken(auth string) (token string, err error) {
 	// Validate Bearer token with uuid
 	if matched, matchErr := regexp.MatchString("^Bearer\\s.+", auth); matchErr != nil || !matched {
@@ -71,4 +76,5 @@ func (b bearerAuth) ParseToken(auth string) (token string, err error) {
 	return
 }
 
+// BearerAuthModule bearer auth 모듈
 var BearerAuthModuole = fx.Module("auth/bearer", fx.Provide(NewBearerAuth))
