@@ -5,6 +5,9 @@ definitions:
         type: string
       title:
         type: string
+    required:
+    - ISBN
+    - title
     type: object
   entity.Book:
     properties:
@@ -108,6 +111,10 @@ definitions:
         type: string
       text:
         type: string
+    required:
+    - bookId
+    - category
+    - text
     type: object
 info:
   contact: {}
@@ -118,6 +125,11 @@ paths:
       - application/json
       description: '사용자가 등록한 모든 책을 조회하는 API. TODO: 읽을책/완독 구분해 가져오게 할 예정'
       parameters:
+      - description: default = true
+        in: query
+        name: isReading
+        required: true
+        type: boolean
       - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
         in: header
         name: Authorization

@@ -31,6 +31,13 @@ const docTemplate = `{
                 "summary": "사용자가 등록한 모든 책을 조회하는 API",
                 "parameters": [
                     {
+                        "type": "boolean",
+                        "description": "default = true",
+                        "name": "isReading",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
                         "type": "string",
                         "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
                         "name": "Authorization",
@@ -304,6 +311,10 @@ const docTemplate = `{
     "definitions": {
         "controller.CreateBookParam": {
             "type": "object",
+            "required": [
+                "ISBN",
+                "title"
+            ],
             "properties": {
                 "ISBN": {
                     "type": "string"
@@ -458,6 +469,11 @@ const docTemplate = `{
         },
         "service.CreateMemoParam": {
             "type": "object",
+            "required": [
+                "bookId",
+                "category",
+                "text"
+            ],
             "properties": {
                 "bookId": {
                     "type": "integer"
