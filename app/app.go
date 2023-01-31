@@ -3,10 +3,8 @@ package app
 import (
 	"context"
 	"log"
-	"net/http"
 
 	"github.com/nexters/book/docs"
-	echoSwagger "github.com/swaggo/echo-swagger"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -18,32 +16,11 @@ import (
 	"go.uber.org/fx"
 )
 
-func bindRoute(e *echo.Echo, c Controller, ba auth.BearerAuth) {
-	e.GET("", func(c echo.Context) error {
-		return c.String(http.StatusOK, "ok")
-	})
-
-	e.GET("/swagger/*", echoSwagger.WrapHandler)
-	b := e.Group("/books")
-	u := e.Group("/users")
-	m := e.Group("/memos")
-	b.GET("", c.Book.FetchAll, ba.ValidateBearerHeader)
-	b.GET("/:isbn", c.Book.FindBookByISBN, ba.ValidateBearerHeader)
-	b.GET("/search", c.Book.Search)
-	b.POST("", c.Book.CreateBook, ba.ValidateBearerHeader)
-	u.GET("/token", c.User.CreateUserAndToken)
-	u.GET("", c.User.FindUser, ba.ValidateBearerHeader)
-	m.GET("", c.Memo.FindAllMemoByUserAndBookID, ba.ValidateBearerHeader)
-	m.POST("", c.Memo.CreateMemo, ba.ValidateBearerHeader)
-}
-
 func RegisterHooks(
 	lifecycle fx.Lifecycle,
 	e *echo.Echo,
 	settings *config.Settings,
 	db config.Database,
-	c Controller,
-	ba auth.BearerAuth,
 	validator *config.RequestValidator,
 ) {
 	lifecycle.Append(fx.Hook{
@@ -58,7 +35,6 @@ func RegisterHooks(
 					AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 				}))
 
-				bindRoute(e, c, ba)
 				configureSwagger(settings)
 
 				if err := db.AutoMigrate(&entity.User{}, &entity.Book{}, &entity.UserBooks{}, &entity.Memo{}); err != nil {

@@ -1,7 +1,12 @@
 package app
 
 import (
+	"net/http"
+
+	"github.com/labstack/echo/v4"
+	"github.com/nexters/book/app/auth"
 	c "github.com/nexters/book/app/controller"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"go.uber.org/fx"
 )
 
@@ -18,6 +23,24 @@ func NewController(
 ) Controller {
 	return Controller{book, user, memo}
 }
+func bindRoute(e *echo.Echo, c Controller, ba auth.BearerAuth) {
+	e.GET("", func(c echo.Context) error {
+		return c.String(http.StatusOK, "ok")
+	})
+
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
+	b := e.Group("/books")
+	u := e.Group("/users")
+	m := e.Group("/memos")
+	b.GET("", c.Book.FetchAll, ba.ValidateBearerHeader)
+	b.GET("/:isbn", c.Book.FindBookByISBN, ba.ValidateBearerHeader)
+	b.GET("/search", c.Book.Search)
+	b.POST("", c.Book.CreateBook, ba.ValidateBearerHeader)
+	u.GET("/token", c.User.CreateUserAndToken)
+	u.GET("", c.User.FindUser, ba.ValidateBearerHeader)
+	m.GET("", c.Memo.FindAllMemoByUserAndBookID, ba.ValidateBearerHeader)
+	m.POST("", c.Memo.CreateMemo, ba.ValidateBearerHeader)
+}
 
 var ControllerModule = fx.Module(
 	"controller",
@@ -27,4 +50,5 @@ var ControllerModule = fx.Module(
 		c.NewMemoController,
 		NewController,
 	),
+	fx.Invoke(bindRoute),
 )
