@@ -11,18 +11,22 @@ import (
 	"github.com/nexters/book/external/search"
 )
 
+// CreateBookParam 책 생성 parameters
 type CreateBookParam struct {
 	ISBN  string `json:"ISBN" validate:"required,isbn"`
 	Title string `json:"title" validate:"required"`
 }
 
 type (
+	// BookController BookController Interface
 	BookController interface {
 		FetchAll(ctx echo.Context) error
 		Search(c echo.Context) error
 		CreateBook(c echo.Context) error
 		FindBookByISBN(c echo.Context) error
 	}
+
+	// bookController bookController Struct
 	bookController struct {
 		bookSearch  search.BookSearch
 		bookService service.BookService
@@ -30,6 +34,7 @@ type (
 	}
 )
 
+// NewBookController 생성자
 func NewBookController(s search.BookSearch, svc service.BookService, auth auth.BearerAuth) BookController {
 	return bookController{s, svc, auth}
 }

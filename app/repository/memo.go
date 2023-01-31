@@ -8,19 +8,24 @@ import (
 )
 
 type (
+	// MemoRepository MemoRepository Interface
 	MemoRepository interface {
 		FindAllMemoByUserAndBookID(userID uint, bookID uint) ([]entity.Memo, error)
 		CreateMemo(userID uint, bookID uint, text string, category string) (entity.Memo, error)
 	}
+
+	// memoRepository memoRepository Struct
 	memoRepository struct {
 		db config.Database
 	}
 )
 
+// NewMemoRepository 생성자
 func NewMemoRepository(db config.Database) MemoRepository {
 	return memoRepository{db}
 }
 
+// CreateMemo 메모 생성
 func (m memoRepository) CreateMemo(
 	userID uint,
 	bookID uint,
@@ -46,6 +51,7 @@ func (m memoRepository) CreateMemo(
 	return
 }
 
+// FindAllMemoByUserAndBookID 메모 조회
 func (m memoRepository) FindAllMemoByUserAndBookID(userID uint, bookID uint) (memos []entity.Memo, err error) {
 	memos = []entity.Memo{}
 

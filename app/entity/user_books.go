@@ -2,6 +2,7 @@ package entity
 
 import "time"
 
+// UserBooks user books entity
 type UserBooks struct {
 	UserID    uint      `gorm:"primaryKey" json:"userId"`
 	BookID    uint      `gorm:"primaryKey" json:"bookId"`
