@@ -73,6 +73,10 @@ func (m memoController) CreateMemo(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Bad request, check request body")
 	}
 
+	if err := c.Validate(param); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
 	memo, err := m.memoService.CreateMemo(param, token)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)

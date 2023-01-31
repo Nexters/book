@@ -52,8 +52,6 @@ func (b bookService) CreateBook(title string, ISBN string, userID string) (entit
 		}
 	}
 
-	// TODO: validation
-
 	// add to db
 	return b.repo.CreateBook(book)
 
