@@ -12,8 +12,8 @@ import (
 )
 
 type CreateBookParam struct {
-	ISBN  string `json:"ISBN"`
-	Title string `json:"title"`
+	ISBN  string `json:"ISBN" validate:"required,isbn"`
+	Title string `json:"title" validate:"required"`
 }
 
 type (
@@ -111,7 +111,11 @@ func (b bookController) CreateBook(c echo.Context) error {
 
 	bookParam := CreateBookParam{}
 	if err := c.Bind(&bookParam); err != nil {
-		return c.String(http.StatusBadRequest, "Provide IBSN and book title correctly")
+		return echo.NewHTTPError(http.StatusBadRequest, "Provide IBSN and book title correctly")
+	}
+
+	if err := c.Validate(bookParam); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	res, err := b.bookService.CreateBook(bookParam.Title, bookParam.ISBN, token)

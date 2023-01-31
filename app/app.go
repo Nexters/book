@@ -44,6 +44,7 @@ func RegisterHooks(
 	db config.Database,
 	c Controller,
 	ba auth.BearerAuth,
+	validator *config.RequestValidator,
 ) {
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
@@ -51,6 +52,7 @@ func RegisterHooks(
 			// https://github.com/uber-go/fx/issues/627#issuecomment-399235227
 
 			go func() {
+				e.Validator = validator
 				e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 					AllowOrigins: []string{"http://localhost:3030", "http://localhost:3000"},
 					AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
@@ -92,5 +94,6 @@ var Modules = fx.Module(
 	RepositoryModule,
 	ServiceModule,
 	auth.BearerAuthModuole,
+	config.ValidatorModule,
 	fx.Invoke(RegisterHooks),
 )

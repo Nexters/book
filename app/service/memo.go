@@ -6,9 +6,9 @@ import (
 )
 
 type CreateMemoParam struct {
-	BookID   uint   `json:"bookId"`
-	Text     string `json:"text"`
-	Category string `json:"category"`
+	BookID   uint   `json:"bookId" validate:"required"`
+	Text     string `json:"text" validate:"required"`
+	Category string `json:"category" validate:"required"`
 }
 
 type (
