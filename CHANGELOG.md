@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.0](https://github.com/Nexters/book/compare/v0.5.3...v0.6.0) (2023-01-31)
+
+
+### Features
+
+* add isReading flag ([7a866e7](https://github.com/Nexters/book/commit/7a866e7d49574c729758f05755095e99dcd3c10b))
+* add max-len to memo text ([172563e](https://github.com/Nexters/book/commit/172563e2e79b09fddf84f86f2e9b9a902bdb33d8))
+
 ## [0.5.3](https://github.com/Nexters/book/compare/v0.5.2...v0.5.3) (2023-01-28)
 
 
