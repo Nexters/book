@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/nexters/book/app/config"
@@ -28,14 +29,14 @@ func NewUserRepository(db config.Database) UserRepository {
 
 // FindUserByUID UID로 사용자 조회
 func (u userRepository) FindUserByUID(uid string) (user entity.User, err error) {
-	user = entity.User{Uid: uid}
-	res := u.db.Where(&user).First(&user)
-	if res.Error != nil {
-		err = res.Error
+	tx := u.db.Preload("Books").Where("users.uid = ?", uid).First(&user)
+	if tx.Error != nil {
+		err = tx.Error
 		return
 	}
-	if res.RowsAffected == 0 {
-		err = errors.New("User not found")
+
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
 	return

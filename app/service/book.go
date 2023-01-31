@@ -5,6 +5,7 @@ import (
 
 	"github.com/nexters/book/app/entity"
 	"github.com/nexters/book/app/repository"
+	"github.com/nexters/book/app/service/payloads"
 	"github.com/nexters/book/external/search"
 )
 
@@ -13,7 +14,8 @@ type (
 	BookService interface {
 		CreateBook(title string, ISBN string, userID string) (entity.Book, error)
 		FindBookByISBN(ISBN string) (entity.Book, error)
-		FindAllBooks(userID string, isReading bool) ([]entity.Book, error)
+		FindAllBooks(userID string, isReading bool) (payloads.FindAllBooksPayload, error)
+		FindBookAndAllMemosByBookID(bookID uint) (entity.Book, error)
 	}
 
 	// bookService bookService Struct
@@ -64,9 +66,33 @@ func (b bookService) CreateBook(title string, ISBN string, userID string) (entit
 }
 
 // FindAllBooks 책 조회
-func (b bookService) FindAllBooks(userID string, isReading bool) ([]entity.Book, error) {
+func (b bookService) FindAllBooks(userID string, isReading bool) (payload payloads.FindAllBooksPayload, err error) {
 
-	return b.repo.FindAllBooks(userID, isReading)
+	books, err := b.repo.FindAllBooks(userID, isReading)
+	if err != nil {
+		return
+	}
+
+	payload.Books = make([]payloads.FindBookPayload, 0)
+	for _, book := range books {
+		Memocount := len(book.Memos)
+		bookPayload := payloads.FindBookPayload{
+			Book:      book,
+			MemoCount: Memocount,
+		}
+
+		payload.Books = append(payload.Books, bookPayload)
+		payload.Count++
+	}
+
+	return
+}
+
+// FindBookAndAllMemosByBookID
+func (b bookService) FindBookAndAllMemosByBookID(bookID uint) (book entity.Book, err error) {
+	book, err = b.repo.FindBookAndAllMemosByBookID(bookID)
+
+	return
 }
 
 // FindBooksByISBN ISBN으로 책 조회

@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 
 	"github.com/nexters/book/app/auth"
 	"github.com/nexters/book/app/service"
@@ -22,6 +23,7 @@ type (
 	// BookController BookController Interface
 	BookController interface {
 		FetchAll(ctx echo.Context) error
+		FindBookAndAllMemosByBookID(c echo.Context) error
 		Search(c echo.Context) error
 		CreateBook(c echo.Context) error
 		FindBookByISBN(c echo.Context) error
@@ -47,7 +49,7 @@ func NewBookController(s search.BookSearch, svc service.BookService, auth auth.B
 // @Produce json
 // @Param isReading query bool true "default = true"
 // @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
-// @Success 200 {object} []entity.Book
+// @Success 200 {object} payloads.FindAllBooksPayload
 // @Router /books [get]
 func (b bookController) FetchAll(c echo.Context) error {
 	isReading := c.QueryParam("isReading")
@@ -84,6 +86,53 @@ func (b bookController) FindBookByISBN(c echo.Context) error {
 	book, err := b.bookService.FindBookByISBN(ISBN)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
+	}
+
+	return c.JSON(http.StatusOK, book)
+}
+
+// @Tags         book
+// @Summary bookID 혹은 ISBN으로 책과 모든 메모 조회 API
+// @Description bookID로 유저의 책과 그에 대한 모든 메모를 조회하는 API
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
+// @Param bookId path string true "12345678"
+// @Param isbn query bool false "true"
+// @Success 200 {object} entity.Book
+// @Router /books/{bookId} [get]
+func (b bookController) FindBookAndAllMemosByBookID(c echo.Context) error {
+	bookID := c.Param("bookId")
+
+	// isbn인 경우 대응
+	isbnString := c.QueryParam("isbn")
+	if isbnString != "" {
+		isISBN, err := strconv.ParseBool(isbnString)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+
+		if isISBN {
+			book, err := b.bookService.FindBookByISBN(bookID)
+
+			switch err {
+			case gorm.ErrRecordNotFound:
+				return c.String(http.StatusOK, "{}")
+			case nil:
+				return c.JSON(http.StatusOK, book)
+			default:
+				return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+			}
+		}
+	}
+
+	bookIDUint, err := strconv.ParseUint(bookID, 10, 32)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	book, err := b.bookService.FindBookAndAllMemosByBookID(uint(bookIDUint))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, book)

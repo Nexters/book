@@ -38,7 +38,7 @@ func RegisterHooks(
 
 				configureSwagger(settings)
 
-				if err := db.AutoMigrate(&entity.User{}, &entity.Book{}, &entity.UserBooks{}, &entity.Memo{}); err != nil {
+				if err := db.AutoMigrate(&entity.User{}, &entity.Book{}, &entity.Memo{}); err != nil {
 					log.Fatal(err)
 				}
 

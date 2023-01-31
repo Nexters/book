@@ -33,8 +33,6 @@ func (m memoRepository) CreateMemo(
 	category string,
 ) (memo entity.Memo, err error) {
 	memo = entity.Memo{
-		UserID:   userID,
-		BookID:   bookID,
 		Text:     text,
 		Category: category,
 	}

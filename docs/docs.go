@@ -49,10 +49,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entity.Book"
-                            }
+                            "$ref": "#/definitions/payloads.FindAllBooksPayload"
                         }
                     }
                 }
@@ -134,7 +131,7 @@ const docTemplate = `{
         },
         "/books/{bookId}": {
             "get": {
-                "description": "ISBN으로 책의 상세 내용을 조회하는 API",
+                "description": "bookID로 유저의 책과 그에 대한 모든 메모를 조회하는 API",
                 "consumes": [
                     "application/json"
                 ],
@@ -144,7 +141,7 @@ const docTemplate = `{
                 "tags": [
                     "book"
                 ],
-                "summary": "ISBN으로 책 조회 API",
+                "summary": "bookID 혹은 ISBN으로 책과 모든 메모 조회 API",
                 "parameters": [
                     {
                         "type": "string",
@@ -159,6 +156,12 @@ const docTemplate = `{
                         "name": "bookId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "true",
+                        "name": "isbn",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -348,6 +351,15 @@ const docTemplate = `{
                 "image": {
                     "type": "string"
                 },
+                "isReading": {
+                    "type": "boolean"
+                },
+                "memos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Memo"
+                    }
+                },
                 "price": {
                     "type": "string"
                 },
@@ -362,13 +374,16 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
                 }
             }
         },
         "entity.Memo": {
             "type": "object",
             "properties": {
-                "bookId": {
+                "bookID": {
                     "type": "integer"
                 },
                 "category": {
@@ -388,9 +403,6 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
-                },
-                "userId": {
-                    "type": "integer"
                 }
             }
         },
@@ -415,7 +427,7 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "uid": {
+                "token": {
                     "type": "string"
                 },
                 "updatedAt": {
@@ -432,6 +444,76 @@ const docTemplate = `{
                 "valid": {
                     "description": "Valid is true if Time is not NULL",
                     "type": "boolean"
+                }
+            }
+        },
+        "payloads.FindAllBooksPayload": {
+            "type": "object",
+            "properties": {
+                "books": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/payloads.FindBookPayload"
+                    }
+                },
+                "count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "payloads.FindBookPayload": {
+            "type": "object",
+            "properties": {
+                "ISBN": {
+                    "type": "string"
+                },
+                "author": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "isReading": {
+                    "type": "boolean"
+                },
+                "memoCount": {
+                    "type": "integer"
+                },
+                "memos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Memo"
+                    }
+                },
+                "price": {
+                    "type": "string"
+                },
+                "publisher": {
+                    "type": "string"
+                },
+                "shopLink": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
                 }
             }
         },
