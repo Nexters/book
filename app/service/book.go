@@ -13,7 +13,7 @@ type (
 	BookService interface {
 		CreateBook(title string, ISBN string, userID string) (entity.Book, error)
 		FindBookByISBN(ISBN string) (entity.Book, error)
-		FindAllBooks(userID string) ([]entity.Book, error)
+		FindAllBooks(userID string, isReading bool) ([]entity.Book, error)
 	}
 
 	// bookService bookService Struct
@@ -64,8 +64,9 @@ func (b bookService) CreateBook(title string, ISBN string, userID string) (entit
 }
 
 // FindAllBooks 책 조회
-func (b bookService) FindAllBooks(userID string) ([]entity.Book, error) {
-	return b.repo.FindAllBooks(userID)
+func (b bookService) FindAllBooks(userID string, isReading bool) ([]entity.Book, error) {
+
+	return b.repo.FindAllBooks(userID, isReading)
 }
 
 // FindBooksByISBN ISBN으로 책 조회

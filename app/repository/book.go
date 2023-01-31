@@ -12,7 +12,7 @@ type (
 	// BookRepository BookRepository Interface
 	BookRepository interface {
 		CreateBook(params CreateBookParams) (entity.Book, error)
-		FindAllBooks(userID string) ([]entity.Book, error)
+		FindAllBooks(userID string, isReading bool) ([]entity.Book, error)
 		FindBookByISBN(ISBN string) (entity.Book, error)
 	}
 
@@ -82,7 +82,7 @@ func (b bookRepository) CreateBook(params CreateBookParams) (book entity.Book, e
 }
 
 // FindAllBooks 책 조회
-func (b bookRepository) FindAllBooks(userID string) (books []entity.Book, err error) {
+func (b bookRepository) FindAllBooks(userID string, isReading bool) (books []entity.Book, err error) {
 	user := entity.User{}
 	res := b.db.Where("uid = ?", userID).First(&user)
 	books = []entity.Book{}
@@ -92,7 +92,7 @@ func (b bookRepository) FindAllBooks(userID string) (books []entity.Book, err er
 		return
 	}
 
-	err = b.db.Model(&user).Where("user_id = ?", user.ID).Association("Books").Find(&books)
+	err = b.db.Model(&user).Where("user_id = ? AND is_reading = ?", user.ID, isReading).Association("Books").Find(&books)
 	if err != nil {
 		err = errors.New("Books not found")
 		return

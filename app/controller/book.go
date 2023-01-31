@@ -3,6 +3,7 @@ package controller
 import (
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 
@@ -44,16 +45,23 @@ func NewBookController(s search.BookSearch, svc service.BookService, auth auth.B
 // @Description 사용자가 등록한 모든 책을 조회하는 API. TODO: 읽을책/완독 구분해 가져오게 할 예정
 // @Accept json
 // @Produce json
+// @Param isReading query bool true "default = true"
 // @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
 // @Success 200 {object} []entity.Book
 // @Router /books [get]
 func (b bookController) FetchAll(c echo.Context) error {
+	isReading := c.QueryParam("isReading")
 	token, err := b.auth.GetToken(c)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, err)
 	}
 
-	books, err := b.bookService.FindAllBooks(token)
+	isReadingBool, err := strconv.ParseBool(isReading)
+	if err != nil {
+		isReadingBool = true
+	}
+
+	books, err := b.bookService.FindAllBooks(token, isReadingBool)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
