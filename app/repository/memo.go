@@ -34,6 +34,7 @@ func (m memoRepository) CreateMemo(
 	memo = entity.Memo{
 		Text:     text,
 		Category: category,
+		BookID:   bookID,
 	}
 
 	// transaction 시작

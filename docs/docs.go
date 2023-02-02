@@ -162,6 +162,12 @@ const docTemplate = `{
                         "description": "true",
                         "name": "isbn",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "comment",
+                        "name": "category",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -175,46 +181,6 @@ const docTemplate = `{
             }
         },
         "/memos": {
-            "get": {
-                "description": "특정 사용자가 특정 책에 대해 작성한 모든 메모를 가져오는 API. query string으로 userId와 bookId를 넘기면 됨.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "memo"
-                ],
-                "summary": "특정 사용자가 특정 책에 대해 작성한 모든 메모를 가져오는 API",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "2",
-                        "name": "bookId",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entity.Memo"
-                            }
-                        }
-                    }
-                }
-            },
             "post": {
                 "description": "특정 사용자가 특정 책에 대해 메모를 작성하는 API",
                 "consumes": [

@@ -110,6 +110,7 @@ func (b bookController) FindBookAndAllMemosByBookID(c echo.Context) error {
 	// isbn인 경우 대응
 	isbnString := c.QueryParam("isbn")
 	category := c.QueryParam("category")
+
 	if isbnString != "" {
 		isISBN, err := strconv.ParseBool(isbnString)
 		if err != nil {

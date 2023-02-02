@@ -2,6 +2,7 @@ package service
 
 import (
 	"log"
+	"strings"
 
 	"github.com/nexters/book/app/entity"
 	"github.com/nexters/book/app/repository"
@@ -33,6 +34,7 @@ func NewBookService(repo repository.BookRepository, bs search.BookSearch) BookSe
 // CreateBook 책 추가
 func (b bookService) CreateBook(title string, ISBN string, userID string) (entity.Book, error) {
 	// search naver
+	title = strings.Split(title, "(")[0]
 	searchedRes, err := b.bookSearch.SearchBookByTitle(title)
 	if err != nil {
 		log.Fatal(err)
@@ -90,7 +92,7 @@ func (b bookService) FindAllBooks(userID string, isReading bool) (payload payloa
 
 // FindBookAndAllMemosByBookID
 func (b bookService) FindBookAndAllMemosByBookID(bookID uint, category string) (payload payloads.FindBookPayload, err error) {
-	book, err := b.repo.FindBookAndAllMemosByBookID(bookID, category)
+	book, err := b.repo.FindBookAndAllMemosByBookID(bookID)
 	if err != nil {
 		return
 	}
@@ -101,12 +103,26 @@ func (b bookService) FindBookAndAllMemosByBookID(bookID uint, category string) (
 		MemoCount: memoCount,
 	}
 
+	// if not category, return all memos
+	if category == "" {
+		return
+	}
+
+	// if category, filter category
+	memos := make([]entity.Memo, 0)
+	for _, memo := range book.Memos {
+		if memo.Category == category {
+			memos = append(memos, memo)
+		}
+	}
+
+	payload.Memos = memos
 	return
 }
 
 // FindBooksByISBN ISBN으로 책 조회
 func (b bookService) FindBookByISBN(ISBN string, category string) (payload payloads.FindBookPayload, err error) {
-	book, err := b.repo.FindBookByISBN(ISBN, category)
+	book, err := b.repo.FindBookByISBN(ISBN)
 	if err != nil {
 		return
 	}
@@ -117,5 +133,19 @@ func (b bookService) FindBookByISBN(ISBN string, category string) (payload paylo
 		MemoCount: memoCount,
 	}
 
+	// if not category, return all memos
+	if category == "" {
+		return
+	}
+
+	// if category, filter category
+	memos := make([]entity.Memo, 0)
+	for _, memo := range book.Memos {
+		if memo.Category == category {
+			memos = append(memos, memo)
+		}
+	}
+
+	payload.Memos = memos
 	return
 }

@@ -13,8 +13,8 @@ type (
 	BookRepository interface {
 		CreateBook(params CreateBookParams) (entity.Book, error)
 		FindAllBooks(userID string, isReading bool) ([]entity.Book, error)
-		FindBookByISBN(ISBN string, category string) (entity.Book, error)
-		FindBookAndAllMemosByBookID(bookID uint, category string) (entity.Book, error)
+		FindBookByISBN(ISBN string) (entity.Book, error)
+		FindBookAndAllMemosByBookID(bookID uint) (entity.Book, error)
 	}
 
 	// bookRepository bookRepository Struct
@@ -88,8 +88,8 @@ func (b bookRepository) FindAllBooks(userID string, isReading bool) (books []ent
 }
 
 // FindBookAndAllMemosByBookID bookID로 유저의 책과 모든 메모 조회
-func (b bookRepository) FindBookAndAllMemosByBookID(bookID uint, category string) (book entity.Book, err error) {
-	tx := b.db.Preload("Memos").Where(b.db.Where("books.id", bookID).Where("memos.category = ?", category)).First(&book)
+func (b bookRepository) FindBookAndAllMemosByBookID(bookID uint) (book entity.Book, err error) {
+	tx := b.db.Preload("Memos").Where("books.id", bookID).First(&book)
 	if tx.Error != nil {
 		err = tx.Error
 		return
@@ -99,10 +99,10 @@ func (b bookRepository) FindBookAndAllMemosByBookID(bookID uint, category string
 }
 
 // FindBookByISBN ISBN으로 책 조회
-func (b bookRepository) FindBookByISBN(ISBN string, category string) (book entity.Book, err error) {
+func (b bookRepository) FindBookByISBN(ISBN string) (book entity.Book, err error) {
 	book = entity.Book{}
 
-	tx := b.db.Preload("Memos").Where(b.db.Where("isbn = ?", ISBN).Where("memos.category = ?", category)).First(&book)
+	tx := b.db.Preload("Memos").Where("isbn = ?", ISBN).First(&book)
 
 	if tx.Error != nil {
 		err = tx.Error

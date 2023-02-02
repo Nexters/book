@@ -43,7 +43,6 @@ func bindRoute(e *echo.Echo, c Controller, ba auth.BearerAuth) {
 	b.POST("", c.Book.CreateBook, ba.ValidateBearerHeader)
 	u.GET("/token", c.User.CreateUserAndToken)
 	u.GET("", c.User.FindUser, ba.ValidateBearerHeader)
-	m.GET("", c.Memo.FindAllMemoByUserAndBookID, ba.ValidateBearerHeader)
 	m.POST("", c.Memo.CreateMemo, ba.ValidateBearerHeader)
 }
 
