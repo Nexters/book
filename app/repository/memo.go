@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"errors"
+	"time"
 
 	"github.com/nexters/book/app/config"
 	"github.com/nexters/book/app/entity"
@@ -11,7 +11,7 @@ type (
 	// MemoRepository MemoRepository Interface
 	MemoRepository interface {
 		FindAllMemoByUserAndBookID(userID uint, bookID uint) ([]entity.Memo, error)
-		CreateMemo(userID uint, bookID uint, text string, category string) (entity.Memo, error)
+		CreateMemo(bookID uint, text string, category string) (entity.Memo, error)
 	}
 
 	// memoRepository memoRepository Struct
@@ -27,27 +27,41 @@ func NewMemoRepository(db config.Database) MemoRepository {
 
 // CreateMemo 메모 생성
 func (m memoRepository) CreateMemo(
-	userID uint,
 	bookID uint,
 	text string,
 	category string,
 ) (memo entity.Memo, err error) {
 	memo = entity.Memo{
-		UserID:   userID,
-		BookID:   bookID,
 		Text:     text,
 		Category: category,
+		BookID:   bookID,
 	}
 
-	res := m.db.Create(&memo)
-	if res.Error != nil {
-		err = res.Error
+	// transaction 시작
+	tx := m.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	// 메모 추가
+	if err = tx.Create(&memo).Error; err != nil {
+		tx.Rollback()
 		return
 	}
 
-	if res.RowsAffected == 0 {
-		err = errors.New("Memo creation failed")
+	// book의 updated_at 갱신
+	now := time.Now()
+	if err = tx.Model(&entity.Book{}).Where("books.id", bookID).Update("updated_at", now).Error; err != nil {
+		tx.Rollback()
+		return
 	}
+
+	// transaction 종료
+	err = tx.Commit().Error
+
 	return
 }
 

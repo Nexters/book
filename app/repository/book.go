@@ -14,6 +14,7 @@ type (
 		CreateBook(params CreateBookParams) (entity.Book, error)
 		FindAllBooks(userID string, isReading bool) ([]entity.Book, error)
 		FindBookByISBN(ISBN string) (entity.Book, error)
+		FindBookAndAllMemosByBookID(bookID uint) (entity.Book, error)
 	}
 
 	// bookRepository bookRepository Struct
@@ -53,31 +54,17 @@ func (b bookRepository) CreateBook(params CreateBookParams) (book entity.Book, e
 		Description: params.Description,
 	}
 
-	res := b.db.Where("isbn = ?", book.ISBN).FirstOrCreate(&book)
-
-	if res.Error != nil || res.RowsAffected == 0 {
-		err = errors.New("Book creation failed")
-		return
-	}
-
 	user := entity.User{}
-	res = b.db.Where("uid = ?", params.UserID).First(&user)
+	tx := b.db.Where("uid = ?", params.UserID).First(&user)
 
-	if res.Error != nil || res.RowsAffected == 0 {
+	if tx.Error != nil || tx.RowsAffected == 0 {
 		err = errors.New("User not found")
 		return
 	}
 
-	userBooks := entity.UserBooks{
-		UserID: user.ID,
-		BookID: book.ID,
-	}
+	book.UserID = user.ID
+	tx = b.db.Create(&book)
 
-	res = b.db.Create(&userBooks)
-	if res.Error != nil || res.RowsAffected == 0 {
-		err = errors.New("Book creation failed")
-		return
-	}
 	return
 }
 
@@ -100,17 +87,29 @@ func (b bookRepository) FindAllBooks(userID string, isReading bool) (books []ent
 	return
 }
 
-// FindBookByISBN ISBN으로 책 조회
-func (b bookRepository) FindBookByISBN(ISBN string) (book entity.Book, err error) {
-	book = entity.Book{}
-	res := b.db.Where("isbn = ?", ISBN).First(&book)
-
-	if res.Error != nil {
-		err = res.Error
+// FindBookAndAllMemosByBookID bookID로 유저의 책과 모든 메모 조회
+func (b bookRepository) FindBookAndAllMemosByBookID(bookID uint) (book entity.Book, err error) {
+	tx := b.db.Preload("Memos").Where("books.id", bookID).First(&book)
+	if tx.Error != nil {
+		err = tx.Error
 		return
 	}
 
-	if res.RowsAffected == 0 {
+	return
+}
+
+// FindBookByISBN ISBN으로 책 조회
+func (b bookRepository) FindBookByISBN(ISBN string) (book entity.Book, err error) {
+	book = entity.Book{}
+
+	tx := b.db.Preload("Memos").Where("isbn = ?", ISBN).First(&book)
+
+	if tx.Error != nil {
+		err = tx.Error
+		return
+	}
+
+	if tx.RowsAffected == 0 {
 		err = errors.New("Book not found")
 		return
 	}

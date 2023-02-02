@@ -48,7 +48,7 @@ func (m memoService) FindAllMemoByUserAndBookID(userID string, bookID uint) (mem
 
 // CreateMemo 메모 생성
 func (m memoService) CreateMemo(param CreateMemoParam, uid string) (memo entity.Memo, err error) {
-	user, err := m.userRepository.FindUserByUID(uid)
+	// TODO: update books.updateAt when memo created
 	if err != nil {
 		return
 	}
@@ -58,6 +58,6 @@ func (m memoService) CreateMemo(param CreateMemoParam, uid string) (memo entity.
 		return
 	}
 
-	memo, err = m.memoRepository.CreateMemo(user.ID, param.BookID, param.Text, param.Category)
+	memo, err = m.memoRepository.CreateMemo(param.BookID, param.Text, param.Category)
 	return
 }

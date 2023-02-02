@@ -2,9 +2,11 @@ package service
 
 import (
 	"log"
+	"strings"
 
 	"github.com/nexters/book/app/entity"
 	"github.com/nexters/book/app/repository"
+	"github.com/nexters/book/app/service/payloads"
 	"github.com/nexters/book/external/search"
 )
 
@@ -12,8 +14,9 @@ type (
 	// BookService BookService Interface
 	BookService interface {
 		CreateBook(title string, ISBN string, userID string) (entity.Book, error)
-		FindBookByISBN(ISBN string) (entity.Book, error)
-		FindAllBooks(userID string, isReading bool) ([]entity.Book, error)
+		FindBookByISBN(ISBN string, category string) (payloads.FindBookPayload, error)
+		FindAllBooks(userID string, isReading bool) (payloads.FindAllBooksPayload, error)
+		FindBookAndAllMemosByBookID(bookID uint, category string) (payloads.FindBookPayload, error)
 	}
 
 	// bookService bookService Struct
@@ -31,6 +34,7 @@ func NewBookService(repo repository.BookRepository, bs search.BookSearch) BookSe
 // CreateBook 책 추가
 func (b bookService) CreateBook(title string, ISBN string, userID string) (entity.Book, error) {
 	// search naver
+	title = strings.Split(title, "(")[0]
 	searchedRes, err := b.bookSearch.SearchBookByTitle(title)
 	if err != nil {
 		log.Fatal(err)
@@ -64,12 +68,84 @@ func (b bookService) CreateBook(title string, ISBN string, userID string) (entit
 }
 
 // FindAllBooks 책 조회
-func (b bookService) FindAllBooks(userID string, isReading bool) ([]entity.Book, error) {
+func (b bookService) FindAllBooks(userID string, isReading bool) (payload payloads.FindAllBooksPayload, err error) {
 
-	return b.repo.FindAllBooks(userID, isReading)
+	books, err := b.repo.FindAllBooks(userID, isReading)
+	if err != nil {
+		return
+	}
+
+	payload.Books = make([]payloads.FindBookPayload, 0)
+	for _, book := range books {
+		Memocount := len(book.Memos)
+		bookPayload := payloads.FindBookPayload{
+			Book:      book,
+			MemoCount: Memocount,
+		}
+
+		payload.Books = append(payload.Books, bookPayload)
+		payload.Count++
+	}
+
+	return
+}
+
+// FindBookAndAllMemosByBookID
+func (b bookService) FindBookAndAllMemosByBookID(bookID uint, category string) (payload payloads.FindBookPayload, err error) {
+	book, err := b.repo.FindBookAndAllMemosByBookID(bookID)
+	if err != nil {
+		return
+	}
+
+	memoCount := len(book.Memos)
+	payload = payloads.FindBookPayload{
+		Book:      book,
+		MemoCount: memoCount,
+	}
+
+	// if not category, return all memos
+	if category == "" {
+		return
+	}
+
+	// if category, filter category
+	memos := make([]entity.Memo, 0)
+	for _, memo := range book.Memos {
+		if memo.Category == category {
+			memos = append(memos, memo)
+		}
+	}
+
+	payload.Memos = memos
+	return
 }
 
 // FindBooksByISBN ISBN으로 책 조회
-func (b bookService) FindBookByISBN(ISBN string) (entity.Book, error) {
-	return b.repo.FindBookByISBN(ISBN)
+func (b bookService) FindBookByISBN(ISBN string, category string) (payload payloads.FindBookPayload, err error) {
+	book, err := b.repo.FindBookByISBN(ISBN)
+	if err != nil {
+		return
+	}
+
+	memoCount := len(book.Memos)
+	payload = payloads.FindBookPayload{
+		Book:      book,
+		MemoCount: memoCount,
+	}
+
+	// if not category, return all memos
+	if category == "" {
+		return
+	}
+
+	// if category, filter category
+	memos := make([]entity.Memo, 0)
+	for _, memo := range book.Memos {
+		if memo.Category == category {
+			memos = append(memos, memo)
+		}
+	}
+
+	payload.Memos = memos
+	return
 }

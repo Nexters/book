@@ -25,6 +25,12 @@ definitions:
         type: integer
       image:
         type: string
+      isReading:
+        type: boolean
+      memos:
+        items:
+          $ref: '#/definitions/entity.Memo'
+        type: array
       price:
         type: string
       publisher:
@@ -35,10 +41,12 @@ definitions:
         type: string
       updatedAt:
         type: string
+      userId:
+        type: integer
     type: object
   entity.Memo:
     properties:
-      bookId:
+      bookID:
         type: integer
       category:
         type: string
@@ -52,8 +60,6 @@ definitions:
         type: string
       updatedAt:
         type: string
-      userId:
-        type: integer
     type: object
   entity.User:
     properties:
@@ -69,7 +75,7 @@ definitions:
         type: string
       id:
         type: integer
-      uid:
+      token:
         type: string
       updatedAt:
         type: string
@@ -81,6 +87,52 @@ definitions:
       valid:
         description: Valid is true if Time is not NULL
         type: boolean
+    type: object
+  payloads.FindAllBooksPayload:
+    properties:
+      books:
+        items:
+          $ref: '#/definitions/payloads.FindBookPayload'
+        type: array
+      count:
+        type: integer
+    type: object
+  payloads.FindBookPayload:
+    properties:
+      ISBN:
+        type: string
+      author:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      isReading:
+        type: boolean
+      memoCount:
+        type: integer
+      memos:
+        items:
+          $ref: '#/definitions/entity.Memo'
+        type: array
+      price:
+        type: string
+      publisher:
+        type: string
+      shopLink:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: integer
     type: object
   search.SearchItem:
     properties:
@@ -141,9 +193,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/entity.Book'
-            type: array
+            $ref: '#/definitions/payloads.FindAllBooksPayload'
       summary: 사용자가 등록한 모든 책을 조회하는 API
       tags:
       - book
@@ -177,7 +227,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: ISBN으로 책의 상세 내용을 조회하는 API
+      description: bookID로 유저의 책과 그에 대한 모든 메모를 조회하는 API
       parameters:
       - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
         in: header
@@ -189,6 +239,14 @@ paths:
         name: bookId
         required: true
         type: string
+      - description: "true"
+        in: query
+        name: isbn
+        type: boolean
+      - description: comment
+        in: query
+        name: category
+        type: string
       produces:
       - application/json
       responses:
@@ -196,7 +254,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/entity.Book'
-      summary: ISBN으로 책 조회 API
+      summary: bookID 혹은 ISBN으로 책과 모든 메모 조회 API
       tags:
       - book
   /books/search:
@@ -224,34 +282,6 @@ paths:
       tags:
       - book
   /memos:
-    get:
-      consumes:
-      - application/json
-      description: 특정 사용자가 특정 책에 대해 작성한 모든 메모를 가져오는 API. query string으로 userId와 bookId를
-        넘기면 됨.
-      parameters:
-      - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: "2"
-        in: query
-        name: bookId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/entity.Memo'
-            type: array
-      summary: 특정 사용자가 특정 책에 대해 작성한 모든 메모를 가져오는 API
-      tags:
-      - memo
     post:
       consumes:
       - application/json

@@ -2,7 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/nexters/book/app/auth"
@@ -12,7 +11,6 @@ import (
 type (
 	// MemoController MemoController Interface
 	MemoController interface {
-		FindAllMemoByUserAndBookID(c echo.Context) error
 		CreateMemo(c echo.Context) error
 	}
 
@@ -26,35 +24,6 @@ type (
 // NewMemoController 생성자
 func NewMemoController(ms service.MemoService, auth auth.BearerAuth) MemoController {
 	return memoController{ms, auth}
-}
-
-// @Tags         memo
-// @Summary 특정 사용자가 특정 책에 대해 작성한 모든 메모를 가져오는 API
-// @Description 특정 사용자가 특정 책에 대해 작성한 모든 메모를 가져오는 API. query string으로 userId와 bookId를 넘기면 됨.
-// @Accept json
-// @Produce json
-// @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
-// @Param bookId query string true "2"
-// @Success 200 {object} []entity.Memo
-// @Router /memos [get]
-func (m memoController) FindAllMemoByUserAndBookID(c echo.Context) error {
-	token, err := m.auth.GetToken(c)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusUnauthorized, err)
-	}
-
-	bookID := c.QueryParam("bookId")
-	bookIDUint, err := strconv.ParseUint(bookID, 10, 32)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
-	}
-
-	memos, err := m.memoService.FindAllMemoByUserAndBookID(token, uint(bookIDUint))
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
-	}
-
-	return c.JSON(http.StatusOK, memos)
 }
 
 // @Tags         memo
