@@ -13,9 +13,9 @@ type (
 	// BookService BookService Interface
 	BookService interface {
 		CreateBook(title string, ISBN string, userID string) (entity.Book, error)
-		FindBookByISBN(ISBN string) (payloads.FindBookPayload, error)
+		FindBookByISBN(ISBN string, category string) (payloads.FindBookPayload, error)
 		FindAllBooks(userID string, isReading bool) (payloads.FindAllBooksPayload, error)
-		FindBookAndAllMemosByBookID(bookID uint) (payloads.FindBookPayload, error)
+		FindBookAndAllMemosByBookID(bookID uint, category string) (payloads.FindBookPayload, error)
 	}
 
 	// bookService bookService Struct
@@ -89,8 +89,8 @@ func (b bookService) FindAllBooks(userID string, isReading bool) (payload payloa
 }
 
 // FindBookAndAllMemosByBookID
-func (b bookService) FindBookAndAllMemosByBookID(bookID uint) (payload payloads.FindBookPayload, err error) {
-	book, err := b.repo.FindBookAndAllMemosByBookID(bookID)
+func (b bookService) FindBookAndAllMemosByBookID(bookID uint, category string) (payload payloads.FindBookPayload, err error) {
+	book, err := b.repo.FindBookAndAllMemosByBookID(bookID, category)
 	if err != nil {
 		return
 	}
@@ -105,8 +105,8 @@ func (b bookService) FindBookAndAllMemosByBookID(bookID uint) (payload payloads.
 }
 
 // FindBooksByISBN ISBN으로 책 조회
-func (b bookService) FindBookByISBN(ISBN string) (payload payloads.FindBookPayload, err error) {
-	book, err := b.repo.FindBookByISBN(ISBN)
+func (b bookService) FindBookByISBN(ISBN string, category string) (payload payloads.FindBookPayload, err error) {
+	book, err := b.repo.FindBookByISBN(ISBN, category)
 	if err != nil {
 		return
 	}

@@ -79,11 +79,13 @@ func (b bookController) FetchAll(c echo.Context) error {
 // @Produce json
 // @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
 // @Param bookId path string true "12345678"
+// @Param category query string false "comment"
 // @Success 200 {object} entity.Book
 // @Router /books/{bookId} [get]
 func (b bookController) FindBookByISBN(c echo.Context) error {
 	ISBN := c.Param("isbn")
-	book, err := b.bookService.FindBookByISBN(ISBN)
+	category := c.QueryParam("category")
+	book, err := b.bookService.FindBookByISBN(ISBN, category)
 	if err != nil {
 		c.JSON(http.StatusNotFound, err)
 	}
@@ -99,6 +101,7 @@ func (b bookController) FindBookByISBN(c echo.Context) error {
 // @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
 // @Param bookId path string true "12345678"
 // @Param isbn query bool false "true"
+// @Param category query string false "comment"
 // @Success 200 {object} entity.Book
 // @Router /books/{bookId} [get]
 func (b bookController) FindBookAndAllMemosByBookID(c echo.Context) error {
@@ -106,6 +109,7 @@ func (b bookController) FindBookAndAllMemosByBookID(c echo.Context) error {
 
 	// isbn인 경우 대응
 	isbnString := c.QueryParam("isbn")
+	category := c.QueryParam("category")
 	if isbnString != "" {
 		isISBN, err := strconv.ParseBool(isbnString)
 		if err != nil {
@@ -113,7 +117,7 @@ func (b bookController) FindBookAndAllMemosByBookID(c echo.Context) error {
 		}
 
 		if isISBN {
-			book, err := b.bookService.FindBookByISBN(bookID)
+			book, err := b.bookService.FindBookByISBN(bookID, category)
 
 			switch err {
 			case gorm.ErrRecordNotFound:
@@ -130,7 +134,7 @@ func (b bookController) FindBookAndAllMemosByBookID(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	book, err := b.bookService.FindBookAndAllMemosByBookID(uint(bookIDUint))
+	book, err := b.bookService.FindBookAndAllMemosByBookID(uint(bookIDUint), category)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
