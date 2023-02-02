@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.0](https://github.com/Nexters/book/compare/v0.6.0...v0.7.0) (2023-02-02)
+
+
+### Features
+
+* add count to book ([0120979](https://github.com/Nexters/book/commit/0120979b2d07be944fe046eecdfc0dab0d8ae28b))
+
+
+### Bug Fixes
+
+* book api ([2720b4b](https://github.com/Nexters/book/commit/2720b4b850ad170255fd2c8d514d25ac34aa1fe2))
+
 ## [0.6.0](https://github.com/Nexters/book/compare/v0.5.3...v0.6.0) (2023-01-31)
 
 
