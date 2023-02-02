@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/Nexters/book/compare/v0.7.0...v0.7.1) (2023-02-02)
+
+
+### Bug Fixes
+
+* remove unused mysql declaration ([8356064](https://github.com/Nexters/book/commit/8356064e56d353073f9641bc02d7e42cde908003))
+
 ## [0.7.0](https://github.com/Nexters/book/compare/v0.6.0...v0.7.0) (2023-02-02)
 
 
