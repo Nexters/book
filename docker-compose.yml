@@ -17,7 +17,3 @@ services:
       - "8082:8082"
     env_file:
       - .env
-
-  mysql:
-
-
