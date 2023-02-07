@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/nexters/book/app/auth"
 	"github.com/nexters/book/app/repository"
+	"github.com/nexters/book/app/service"
 	_ "github.com/nexters/book/docs"
 )
 
@@ -18,14 +19,15 @@ type (
 
 	// userController userController Struct
 	userController struct {
-		repo repository.UserRepository
-		auth auth.BearerAuth
+		repo    repository.UserRepository
+		auth    auth.BearerAuth
+		service service.UserService
 	}
 )
 
 // NewUserController 생성자
-func NewUserController(r repository.UserRepository, auth auth.BearerAuth) UserController {
-	return userController{r, auth}
+func NewUserController(r repository.UserRepository, auth auth.BearerAuth, s service.UserService) UserController {
+	return userController{r, auth, s}
 }
 
 // @Tags         user
@@ -45,12 +47,12 @@ func (u userController) CreateUserAndToken(c echo.Context) error {
 }
 
 // @Tags         user
-// @Summary 사용자 조회 API
-// @Description Authorization header의 bearer token을 이용해 사용자를 조회함
+// @Summary 사용자 통계 조회 API
+// @Description Authorization header의 bearer token을 이용해 사용자 통계를 조회함
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
-// @Success 200 {object} entity.User
+// @Success 200 {object} payloads.UserStatPayload
 // @Router /users [get]
 func (u userController) FindUser(c echo.Context) error {
 	token, err := u.auth.GetToken(c)
@@ -59,7 +61,7 @@ func (u userController) FindUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnauthorized, err)
 	}
 
-	user, err := u.repo.FindUserByUID(token)
+	user, err := u.service.FindUserStat(token)
 
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, "User not found")

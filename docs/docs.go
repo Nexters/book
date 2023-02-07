@@ -223,7 +223,7 @@ const docTemplate = `{
         },
         "/users": {
             "get": {
-                "description": "Authorization header의 bearer token을 이용해 사용자를 조회함",
+                "description": "Authorization header의 bearer token을 이용해 사용자 통계를 조회함",
                 "consumes": [
                     "application/json"
                 ],
@@ -233,7 +233,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "사용자 조회 API",
+                "summary": "사용자 통계 조회 API",
                 "parameters": [
                     {
                         "type": "string",
@@ -247,7 +247,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/payloads.UserStatPayload"
                         }
                     }
                 }
@@ -479,6 +479,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "payloads.UserStatPayload": {
+            "type": "object",
+            "properties": {
+                "duration": {
+                    "type": "integer"
+                },
+                "memoCount": {
+                    "type": "integer"
+                },
+                "readCount": {
                     "type": "integer"
                 }
             }

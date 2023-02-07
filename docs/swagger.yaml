@@ -134,6 +134,15 @@ definitions:
       userId:
         type: integer
     type: object
+  payloads.UserStatPayload:
+    properties:
+      duration:
+        type: integer
+      memoCount:
+        type: integer
+      readCount:
+        type: integer
+    type: object
   search.SearchItem:
     properties:
       author:
@@ -312,7 +321,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Authorization header의 bearer token을 이용해 사용자를 조회함
+      description: Authorization header의 bearer token을 이용해 사용자 통계를 조회함
       parameters:
       - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
         in: header
@@ -325,8 +334,8 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.User'
-      summary: 사용자 조회 API
+            $ref: '#/definitions/payloads.UserStatPayload'
+      summary: 사용자 통계 조회 API
       tags:
       - user
   /users/token:
