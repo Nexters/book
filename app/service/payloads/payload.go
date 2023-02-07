@@ -13,12 +13,10 @@ type FindBookPayload struct {
 }
 
 type UpdateBookPayload struct {
-	ID        uint `json:"bookId" validate:"required,number"`
-	IsReading bool `json:"isReading" validate:"required,boolean"`
+	IsReading *bool `json:"isReading" validate:"required,boolean"`
 }
 
 type UpdateMemoPayload struct {
-	ID       uint   `json:"memoId" validate:"required,number"`
 	Text     string `json:"text"`
 	Category string `json:"category"`
 }

@@ -10,6 +10,7 @@ import (
 
 	"github.com/nexters/book/app/auth"
 	"github.com/nexters/book/app/service"
+	"github.com/nexters/book/app/service/payloads"
 	"github.com/nexters/book/external/search"
 )
 
@@ -27,6 +28,7 @@ type (
 		Search(c echo.Context) error
 		CreateBook(c echo.Context) error
 		FindBookByISBN(c echo.Context) error
+		UpdateBook(c echo.Context) error
 	}
 
 	// bookController bookController Struct
@@ -190,4 +192,39 @@ func (b bookController) CreateBook(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 	return c.JSON(http.StatusCreated, res)
+}
+
+// @Tags         book
+// @Summary 책을 읽는 중/완독 설정하는 API
+// @Description 특정 책의 읽는 중/완독 상태를 업데이트하는 API
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
+// @Param request body payloads.UpdateBookPayload true "payloads.UpdateBookPayload{}"
+// @Param bookId path string true "12345678"
+// @Success 200 {object} entity.Book "entity.Book{}"
+// @Router /books/{bookId} [patch]
+func (b bookController) UpdateBook(c echo.Context) error {
+	_, err := b.auth.GetToken(c)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, err)
+	}
+
+	param := payloads.UpdateBookPayload{}
+	if err := c.Bind(&param); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	// strconv.ParseUint(bookID, 10, 64)
+	bookID, err := strconv.ParseUint(c.Param("bookId"), 10, 64)
+
+	if err := c.Validate(param); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	res, err := b.bookService.UpdateBook(uint(bookID), *param.IsReading)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, res)
 }

@@ -134,6 +134,13 @@ definitions:
       userId:
         type: integer
     type: object
+  payloads.UpdateBookPayload:
+    properties:
+      isReading:
+        type: boolean
+    required:
+    - isReading
+    type: object
   payloads.UserStatPayload:
     properties:
       duration:
@@ -264,6 +271,37 @@ paths:
           schema:
             $ref: '#/definitions/entity.Book'
       summary: bookID 혹은 ISBN으로 책과 모든 메모 조회 API
+      tags:
+      - book
+    patch:
+      consumes:
+      - application/json
+      description: 특정 책의 읽는 중/완독 상태를 업데이트하는 API
+      parameters:
+      - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: payloads.UpdateBookPayload{}
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/payloads.UpdateBookPayload'
+      - description: "12345678"
+        in: path
+        name: bookId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: entity.Book{}
+          schema:
+            $ref: '#/definitions/entity.Book'
+      summary: 책을 읽는 중/완독 설정하는 API
       tags:
       - book
   /books/search:

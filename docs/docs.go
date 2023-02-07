@@ -178,6 +178,52 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "description": "특정 책의 읽는 중/완독 상태를 업데이트하는 API",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "book"
+                ],
+                "summary": "책을 읽는 중/완독 설정하는 API",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "payloads.UpdateBookPayload{}",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/payloads.UpdateBookPayload"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "12345678",
+                        "name": "bookId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "entity.Book{}",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Book"
+                        }
+                    }
+                }
             }
         },
         "/memos": {
@@ -480,6 +526,17 @@ const docTemplate = `{
                 },
                 "userId": {
                     "type": "integer"
+                }
+            }
+        },
+        "payloads.UpdateBookPayload": {
+            "type": "object",
+            "required": [
+                "isReading"
+            ],
+            "properties": {
+                "isReading": {
+                    "type": "boolean"
                 }
             }
         },

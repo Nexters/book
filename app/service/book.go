@@ -17,6 +17,7 @@ type (
 		FindBookByISBN(ISBN string, category string) (payloads.FindBookPayload, error)
 		FindAllBooks(userID string, isReading bool) (payloads.FindAllBooksPayload, error)
 		FindBookAndAllMemosByBookID(bookID uint, category string) (payloads.FindBookPayload, error)
+		UpdateBook(bookID uint, isReading bool) (entity.Book, error)
 	}
 
 	// bookService bookService Struct
@@ -147,5 +148,11 @@ func (b bookService) FindBookByISBN(ISBN string, category string) (payload paylo
 	}
 
 	payload.Memos = memos
+	return
+}
+
+func (b bookService) UpdateBook(bookID uint, isReading bool) (book entity.Book, err error) {
+	book, err = b.repo.UpdateBook(bookID, isReading)
+
 	return
 }
