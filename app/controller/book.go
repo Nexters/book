@@ -249,7 +249,7 @@ func (b bookController) DeleteBook(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	book, err := b.bookService.DeleteBook(uint(bookID), token)
+	_, err = b.bookService.DeleteBook(uint(bookID), token)
 
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
