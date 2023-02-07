@@ -16,6 +16,7 @@ type (
 		FindBookByISBN(ISBN string) (entity.Book, error)
 		FindBookAndAllMemosByBookID(bookID uint) (entity.Book, error)
 		UpdateBook(bookID uint, isReading bool) (entity.Book, error)
+		DeleteBook(bookID uint, userID string) (entity.Book, error)
 	}
 
 	// bookRepository bookRepository Struct
@@ -126,6 +127,25 @@ func (b bookRepository) UpdateBook(bookID uint, isReading bool) (book entity.Boo
 
 	if tx.RowsAffected == 0 {
 		err = errors.New("Update failed")
+		return
+	}
+
+	return
+}
+
+func (b bookRepository) DeleteBook(bookID uint, userID string) (book entity.Book, err error) {
+	user := entity.User{Uid: userID}
+	b.db.First(&user)
+	book.UserID = user.ID
+	book.ID = bookID
+
+	tx := b.db.Delete(&book)
+	if err = tx.Error; err != nil {
+		return
+	}
+
+	if tx.RowsAffected == 0 {
+		err = errors.New("Delete failed")
 		return
 	}
 

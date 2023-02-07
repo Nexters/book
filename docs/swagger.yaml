@@ -240,6 +240,31 @@ paths:
       tags:
       - book
   /books/{bookId}:
+    delete:
+      consumes:
+      - application/json
+      description: 특정 책을 삭제하는 API
+      parameters:
+      - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "12345678"
+        in: path
+        name: bookId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: entity.Book{}
+          schema:
+            $ref: '#/definitions/entity.Book'
+      summary: 책을 삭제하는 API
+      tags:
+      - book
     get:
       consumes:
       - application/json

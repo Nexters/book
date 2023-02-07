@@ -29,6 +29,7 @@ type (
 		CreateBook(c echo.Context) error
 		FindBookByISBN(c echo.Context) error
 		UpdateBook(c echo.Context) error
+		DeleteBook(c echo.Context) error
 	}
 
 	// bookController bookController Struct
@@ -214,8 +215,11 @@ func (b bookController) UpdateBook(c echo.Context) error {
 	if err := c.Bind(&param); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	// strconv.ParseUint(bookID, 10, 64)
+
 	bookID, err := strconv.ParseUint(c.Param("bookId"), 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
 
 	if err := c.Validate(param); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -227,4 +231,29 @@ func (b bookController) UpdateBook(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, res)
+}
+
+// @Tags         book
+// @Summary 책을 삭제하는 API
+// @Description 특정 책을 삭제하는 API
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
+// @Param bookId path string true "12345678"
+// @Success 202 string "accepted"
+// @Router /books/{bookId} [delete]
+func (b bookController) DeleteBook(c echo.Context) error {
+	token, err := b.auth.GetToken(c)
+	bookID, err := strconv.ParseUint(c.Param("bookId"), 10, 64)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	book, err := b.bookService.DeleteBook(uint(bookID), token)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return c.String(http.StatusAccepted, "delete success")
 }
