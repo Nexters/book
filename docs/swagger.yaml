@@ -134,6 +134,22 @@ definitions:
       userId:
         type: integer
     type: object
+  payloads.UpdateBookPayload:
+    properties:
+      isReading:
+        type: boolean
+    required:
+    - isReading
+    type: object
+  payloads.UserStatPayload:
+    properties:
+      duration:
+        type: integer
+      memoCount:
+        type: integer
+      readCount:
+        type: integer
+    type: object
   search.SearchItem:
     properties:
       author:
@@ -224,6 +240,31 @@ paths:
       tags:
       - book
   /books/{bookId}:
+    delete:
+      consumes:
+      - application/json
+      description: 특정 책을 삭제하는 API
+      parameters:
+      - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "12345678"
+        in: path
+        name: bookId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: entity.Book{}
+          schema:
+            $ref: '#/definitions/entity.Book'
+      summary: 책을 삭제하는 API
+      tags:
+      - book
     get:
       consumes:
       - application/json
@@ -255,6 +296,37 @@ paths:
           schema:
             $ref: '#/definitions/entity.Book'
       summary: bookID 혹은 ISBN으로 책과 모든 메모 조회 API
+      tags:
+      - book
+    patch:
+      consumes:
+      - application/json
+      description: 특정 책의 읽는 중/완독 상태를 업데이트하는 API
+      parameters:
+      - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: payloads.UpdateBookPayload{}
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/payloads.UpdateBookPayload'
+      - description: "12345678"
+        in: path
+        name: bookId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: entity.Book{}
+          schema:
+            $ref: '#/definitions/entity.Book'
+      summary: 책을 읽는 중/완독 설정하는 API
       tags:
       - book
   /books/search:
@@ -312,7 +384,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Authorization header의 bearer token을 이용해 사용자를 조회함
+      description: Authorization header의 bearer token을 이용해 사용자 통계를 조회함
       parameters:
       - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
         in: header
@@ -325,8 +397,8 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.User'
-      summary: 사용자 조회 API
+            $ref: '#/definitions/payloads.UserStatPayload'
+      summary: 사용자 통계 조회 API
       tags:
       - user
   /users/token:

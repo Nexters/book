@@ -41,6 +41,8 @@ func bindRoute(e *echo.Echo, c Controller, ba auth.BearerAuth) {
 	// b.GET("/:isbn", c.Book.FindBookByISBN, ba.ValidateBearerHeader)
 	b.GET("/search", c.Book.Search)
 	b.POST("", c.Book.CreateBook, ba.ValidateBearerHeader)
+	b.PATCH("/:bookId", c.Book.UpdateBook, ba.ValidateBearerHeader)
+	b.DELETE("/:bookId", c.Book.DeleteBook, ba.ValidateBearerHeader)
 	u.GET("/token", c.User.CreateUserAndToken)
 	u.GET("", c.User.FindUser, ba.ValidateBearerHeader)
 	m.POST("", c.Memo.CreateMemo, ba.ValidateBearerHeader)

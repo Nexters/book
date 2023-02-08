@@ -17,6 +17,8 @@ type (
 		FindBookByISBN(ISBN string, category string) (payloads.FindBookPayload, error)
 		FindAllBooks(userID string, isReading bool) (payloads.FindAllBooksPayload, error)
 		FindBookAndAllMemosByBookID(bookID uint, category string) (payloads.FindBookPayload, error)
+		UpdateBook(bookID uint, isReading bool) (entity.Book, error)
+		DeleteBook(bookID uint, userID string) (entity.Book, error)
 	}
 
 	// bookService bookService Struct
@@ -148,4 +150,16 @@ func (b bookService) FindBookByISBN(ISBN string, category string) (payload paylo
 
 	payload.Memos = memos
 	return
+}
+
+// UpdateBook 책의 읽는 중/완독 업데이트
+func (b bookService) UpdateBook(bookID uint, isReading bool) (book entity.Book, err error) {
+	book, err = b.repo.UpdateBook(bookID, isReading)
+
+	return
+}
+
+// DeleteBook 책 삭제
+func (b bookService) DeleteBook(bookID uint, userID string) (entity.Book, error) {
+	return b.repo.DeleteBook(bookID, userID)
 }

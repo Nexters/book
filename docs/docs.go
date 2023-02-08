@@ -178,6 +178,89 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "특정 책을 삭제하는 API",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "book"
+                ],
+                "summary": "책을 삭제하는 API",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "12345678",
+                        "name": "bookId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "entity.Book{}",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Book"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "특정 책의 읽는 중/완독 상태를 업데이트하는 API",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "book"
+                ],
+                "summary": "책을 읽는 중/완독 설정하는 API",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "payloads.UpdateBookPayload{}",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/payloads.UpdateBookPayload"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "12345678",
+                        "name": "bookId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "entity.Book{}",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Book"
+                        }
+                    }
+                }
             }
         },
         "/memos": {
@@ -223,7 +306,7 @@ const docTemplate = `{
         },
         "/users": {
             "get": {
-                "description": "Authorization header의 bearer token을 이용해 사용자를 조회함",
+                "description": "Authorization header의 bearer token을 이용해 사용자 통계를 조회함",
                 "consumes": [
                     "application/json"
                 ],
@@ -233,7 +316,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "사용자 조회 API",
+                "summary": "사용자 통계 조회 API",
                 "parameters": [
                     {
                         "type": "string",
@@ -247,7 +330,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/payloads.UserStatPayload"
                         }
                     }
                 }
@@ -479,6 +562,31 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "payloads.UpdateBookPayload": {
+            "type": "object",
+            "required": [
+                "isReading"
+            ],
+            "properties": {
+                "isReading": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "payloads.UserStatPayload": {
+            "type": "object",
+            "properties": {
+                "duration": {
+                    "type": "integer"
+                },
+                "memoCount": {
+                    "type": "integer"
+                },
+                "readCount": {
                     "type": "integer"
                 }
             }
