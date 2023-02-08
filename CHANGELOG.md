@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.8.0](https://github.com/Nexters/book/compare/v0.7.1...v0.8.0) (2023-02-08)
+
+
+### Features
+
+* implement book delete ([7f23ce8](https://github.com/Nexters/book/commit/7f23ce8105d13be7bf18c549f813fe85db44f376))
+* implement book update ([8bad81f](https://github.com/Nexters/book/commit/8bad81f8725d76c5f22398c8a871bf947967e8db))
+* implement user stat api ([fc64d35](https://github.com/Nexters/book/commit/fc64d3544293d5ec1e22346f9fa2e1b1a484e7a3))
+
+
+### Bug Fixes
+
+* ad allow credentials ([89e326f](https://github.com/Nexters/book/commit/89e326f81426215b57d0898ab6cad498047a3b4a))
+* allow options method ([885cf7c](https://github.com/Nexters/book/commit/885cf7ccdd5ca44ec9e4001b9090113d7d741bdd))
+* cors ([e3ef059](https://github.com/Nexters/book/commit/e3ef059e932fc441d9750ed1e5d036f2db3bc3c9))
+* make explicit about allow headers ([99b9e31](https://github.com/Nexters/book/commit/99b9e31982de192fafcd3006e176a3b9f4572b49))
+* unused var ([2a39f1c](https://github.com/Nexters/book/commit/2a39f1c1acaf0de0398a45d17f9ddb75bb0b39a2))
+* update cors middleware ([7ab2d19](https://github.com/Nexters/book/commit/7ab2d19364ffd1a5e5c6a3326442f9f636b057d9))
+
 ## [0.7.1](https://github.com/Nexters/book/compare/v0.7.0...v0.7.1) (2023-02-02)
 
 
