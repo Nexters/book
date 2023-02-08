@@ -36,7 +36,7 @@ func RegisterHooks(
 					AllowOrigins:     []string{"http://localhost:3030", "http://localhost:3000"},
 					AllowHeaders:     []string{"*"},
 					AllowCredentials: true,
-					AllowMethods:     []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+					AllowMethods:     []string{http.MethodGet, http.MethodOptions, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
 				}))
 				// e.Use(middleware.CORS())
 
