@@ -31,10 +31,11 @@ func RegisterHooks(
 
 			go func() {
 				e.Validator = validator
-				e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-					AllowOrigins: []string{"http://localhost:3030", "http://localhost:3000"},
-					AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-				}))
+				// e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+				// 	AllowOrigins: []string{"http://localhost:3030", "http://localhost:3000"},
+				// 	AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+				// }))
+				e.Use(middleware.CORS())
 
 				configureSwagger(settings)
 
