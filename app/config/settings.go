@@ -21,6 +21,7 @@ type Settings struct {
 		Password string `env:"DATABASE_PASSWORD"`
 		Port     int    `env:"DATABASE_PORT"`
 		Name     string `env:"DATABASE_NAME"`
+		URL      string `env:"DATABASE_URL"`
 	}
 
 	// External 외부 연동 환경변수
