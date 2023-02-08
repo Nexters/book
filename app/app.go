@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"log"
+	"net/http"
 
 	"github.com/nexters/book/docs"
 
@@ -31,11 +32,12 @@ func RegisterHooks(
 
 			go func() {
 				e.Validator = validator
-				// e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-				// 	AllowOrigins: []string{"http://localhost:3030", "http://localhost:3000"},
-				// 	AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-				// }))
-				e.Use(middleware.CORS())
+				e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+					AllowOrigins: []string{"http://localhost:3030", "http://localhost:3000"},
+					AllowHeaders: []string{"*"},
+					AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+				}))
+				// e.Use(middleware.CORS())
 
 				configureSwagger(settings)
 
