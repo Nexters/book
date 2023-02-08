@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.1](https://github.com/Nexters/book/compare/v0.8.0...v0.8.1) (2023-02-08)
+
+
+### Bug Fixes
+
+* add charset and loc ([2fe67a0](https://github.com/Nexters/book/commit/2fe67a014e76784098693102bd40ad1331f12703))
+* add parseTime true ([8d1712e](https://github.com/Nexters/book/commit/8d1712e2122b098c859939f6c591fbd18144938a))
+
 ## [0.8.0](https://github.com/Nexters/book/compare/v0.7.1...v0.8.0) (2023-02-08)
 
 
