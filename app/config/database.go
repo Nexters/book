@@ -15,7 +15,7 @@ type Database struct {
 }
 
 // NewDatabase 생성자
-func NewDatabase(settings *Settings, dialector SQLiteDialector) Database {
+func NewDatabase(settings *Settings, dialector MySQLDialector) Database {
 	db, err := gorm.Open(dialector, &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
