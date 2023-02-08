@@ -34,7 +34,7 @@ func RegisterHooks(
 				e.Validator = validator
 				e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 					AllowOrigins:     []string{"http://localhost:3030", "http://localhost:3000"},
-					AllowHeaders:     []string{"*"},
+					AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAccessControlAllowCredentials, echo.HeaderAuthorization},
 					AllowCredentials: true,
 					AllowMethods:     []string{http.MethodGet, http.MethodOptions, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
 				}))
