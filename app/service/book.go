@@ -2,7 +2,6 @@ package service
 
 import (
 	"log"
-	"strings"
 
 	"github.com/nexters/book/app/entity"
 	"github.com/nexters/book/app/repository"
@@ -13,7 +12,7 @@ import (
 type (
 	// BookService BookService Interface
 	BookService interface {
-		CreateBook(title string, ISBN string, userID string) (entity.Book, error)
+		CreateBook(ISBN string, userID string) (entity.Book, error)
 		FindBookByISBN(ISBN string, category string) (payloads.FindBookPayload, error)
 		FindAllBooks(userID string, isReading bool) (payloads.FindAllBooksPayload, error)
 		FindBookAndAllMemosByBookID(bookID uint, category string) (payloads.FindBookPayload, error)
@@ -34,10 +33,9 @@ func NewBookService(repo repository.BookRepository, bs search.BookSearch) BookSe
 }
 
 // CreateBook 책 추가
-func (b bookService) CreateBook(title string, ISBN string, userID string) (entity.Book, error) {
+func (b bookService) CreateBook(ISBN string, userID string) (entity.Book, error) {
 	// search naver
-	title = strings.Split(title, "(")[0]
-	searchedRes, err := b.bookSearch.SearchBookByTitle(title)
+	searchedRes, err := b.bookSearch.SearchBook(ISBN)
 	if err != nil {
 		log.Fatal(err)
 		return entity.Book{}, err

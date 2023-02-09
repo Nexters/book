@@ -35,7 +35,7 @@ type SearchItem struct {
 
 type (
 	BookSearch interface {
-		SearchBookByTitle(title string) (SearchResponse, error)
+		SearchBook(query string) (SearchResponse, error)
 	}
 	bookSearch struct {
 		settings *config.Settings
@@ -46,8 +46,8 @@ func NewBookSearch(s *config.Settings) BookSearch {
 	return bookSearch{s}
 }
 
-func (b bookSearch) SearchBookByTitle(title string) (SearchResponse, error) {
-	url := fmt.Sprintf("%v?query=%v", b.settings.External.SearchEndpoint, url.QueryEscape(title))
+func (b bookSearch) SearchBook(query string) (SearchResponse, error) {
+	url := fmt.Sprintf("%v?query=%v", b.settings.External.SearchEndpoint, url.QueryEscape(query))
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Fatal(err)

@@ -3,11 +3,8 @@ definitions:
     properties:
       ISBN:
         type: string
-      title:
-        type: string
     required:
     - ISBN
-    - title
     type: object
   entity.Book:
     properties:
@@ -216,7 +213,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: 책의 ISBN, 제목, userId를 body로 제공하면 읽을책으로 등록하는 API
+      description: 책의 ISBN을 body로 제공하면 읽을책으로 등록하는 API
       parameters:
       - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
         in: header
@@ -258,10 +255,10 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: entity.Book{}
+        "202":
+          description: accepted
           schema:
-            $ref: '#/definitions/entity.Book'
+            type: string
       summary: 책을 삭제하는 API
       tags:
       - book

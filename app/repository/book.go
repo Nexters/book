@@ -81,11 +81,16 @@ func (b bookRepository) FindAllBooks(userID string, isReading bool) (books []ent
 		return
 	}
 
-	err = b.db.Model(&user).Where("user_id = ? AND is_reading = ?", user.ID, isReading).Association("Books").Find(&books)
-	if err != nil {
+	tx := b.db.Preload("Memos").Where("books.user_id = ? AND is_reading = ?", user.ID, isReading).Find(&books)
+	if err = tx.Error; err != nil {
+		return
+	}
+
+	if tx.RowsAffected == 0 {
 		err = errors.New("Books not found")
 		return
 	}
+
 	return
 }
 
