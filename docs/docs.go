@@ -55,7 +55,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "책의 ISBN, 제목, userId를 body로 제공하면 읽을책으로 등록하는 API",
+                "description": "책의 ISBN을 body로 제공하면 읽을책으로 등록하는 API",
                 "consumes": [
                     "application/json"
                 ],
@@ -208,10 +208,10 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "entity.Book{}",
+                    "202": {
+                        "description": "accepted",
                         "schema": {
-                            "$ref": "#/definitions/entity.Book"
+                            "type": "string"
                         }
                     }
                 }
@@ -364,14 +364,10 @@ const docTemplate = `{
         "controller.CreateBookParam": {
             "type": "object",
             "required": [
-                "ISBN",
-                "title"
+                "ISBN"
             ],
             "properties": {
                 "ISBN": {
-                    "type": "string"
-                },
-                "title": {
                     "type": "string"
                 }
             }

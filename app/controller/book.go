@@ -16,8 +16,7 @@ import (
 
 // CreateBookParam 책 생성 parameters
 type CreateBookParam struct {
-	ISBN  string `json:"ISBN" validate:"required,isbn"`
-	Title string `json:"title" validate:"required"`
+	ISBN string `json:"ISBN" validate:"required,isbn"`
 }
 
 type (
@@ -156,7 +155,7 @@ func (b bookController) FindBookAndAllMemosByBookID(c echo.Context) error {
 // @Router /books/search [get]
 func (b bookController) Search(c echo.Context) error {
 	title := c.QueryParam("title")
-	res, err := b.bookSearch.SearchBookByTitle(title)
+	res, err := b.bookSearch.SearchBook(title)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -166,7 +165,7 @@ func (b bookController) Search(c echo.Context) error {
 
 // @Tags         book
 // @Summary 읽을 책을 등록하는 API
-// @Description 책의 ISBN, 제목, userId를 body로 제공하면 읽을책으로 등록하는 API
+// @Description 책의 ISBN을 body로 제공하면 읽을책으로 등록하는 API
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
@@ -188,7 +187,7 @@ func (b bookController) CreateBook(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	res, err := b.bookService.CreateBook(bookParam.Title, bookParam.ISBN, token)
+	res, err := b.bookService.CreateBook(bookParam.ISBN, token)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -240,7 +239,7 @@ func (b bookController) UpdateBook(c echo.Context) error {
 // @Produce json
 // @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
 // @Param bookId path string true "12345678"
-// @Success 202 string "accepted"
+// @Success 202 string true "accepted"
 // @Router /books/{bookId} [delete]
 func (b bookController) DeleteBook(c echo.Context) error {
 	token, err := b.auth.GetToken(c)
