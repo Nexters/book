@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.2](https://github.com/Nexters/book/compare/v0.8.1...v0.8.2) (2023-02-09)
+
+
+### Bug Fixes
+
+* return memos from books all api ([8c9d2ff](https://github.com/Nexters/book/commit/8c9d2ffb11576638199e9b7cc8da55a775e1d7e4))
+
 ## [0.8.1](https://github.com/Nexters/book/compare/v0.8.0...v0.8.1) (2023-02-08)
 
 
