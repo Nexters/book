@@ -321,3 +321,5 @@ bin
 # SQLite
 *.db
 *.sqlite
+
+token.txt
