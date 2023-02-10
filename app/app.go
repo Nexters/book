@@ -11,6 +11,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/nexters/book/app/auth"
 	"github.com/nexters/book/app/config"
+	"github.com/nexters/book/app/config/environment"
 	"github.com/nexters/book/app/entity"
 	_ "github.com/nexters/book/docs"
 	"github.com/nexters/book/external/search"
@@ -65,7 +66,11 @@ func configureSwagger(settings *config.Settings) {
 	docs.SwaggerInfo.Description = "독서기록 작성 서비스 API 문서"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = settings.App.API_HOST
-	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+	docs.SwaggerInfo.Schemes = []string{"https", "http"}
+
+	if settings.App.ENV == environment.DEV {
+		docs.SwaggerInfo.Schemes = []string{"http", "http"}
+	}
 }
 
 // Modules 메인 모듈

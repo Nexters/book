@@ -13,6 +13,7 @@ type Settings struct {
 	App struct {
 		Port     int    `env:"PORT" json:"port"`
 		API_HOST string `env:"API_HOST"`
+		ENV      string `env:"ENV" json:"env"`
 	}
 
 	// Database DB 환경변수
