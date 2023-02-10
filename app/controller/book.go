@@ -68,7 +68,7 @@ func (b bookController) FetchAll(c echo.Context) error {
 	books, err := b.bookService.FindAllBooks(token, isReadingBool)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
 	return c.JSON(http.StatusOK, books)
