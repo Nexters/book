@@ -87,7 +87,6 @@ func (b bookRepository) FindAllBooks(userID string, isReading bool) (books []ent
 	}
 
 	if tx.RowsAffected == 0 {
-		err = errors.New("Books not found")
 		return
 	}
 
