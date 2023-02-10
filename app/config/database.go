@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 
+	"github.com/nexters/book/app/config/environment"
 	"gorm.io/gorm/logger"
 
 	"go.uber.org/fx"
@@ -16,9 +17,11 @@ type Database struct {
 
 // NewDatabase 생성자
 func NewDatabase(settings *Settings, dialector MySQLDialector) Database {
-	db, err := gorm.Open(dialector, &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	})
+	config := gorm.Config{}
+	if settings.App.ENV != environment.PROD {
+		config.Logger = logger.Default.LogMode(logger.Info)
+	}
+	db, err := gorm.Open(dialector, &config)
 
 	if err != nil {
 		log.Fatal(err)
