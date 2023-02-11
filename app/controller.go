@@ -46,6 +46,8 @@ func bindRoute(e *echo.Echo, c Controller, ba auth.BearerAuth) {
 	u.GET("/token", c.User.CreateUserAndToken)
 	u.GET("", c.User.FindUser, ba.ValidateBearerHeader)
 	m.POST("", c.Memo.CreateMemo, ba.ValidateBearerHeader)
+	m.PATCH("/:memoId", c.Memo.UpdateMemo, ba.ValidateBearerHeader)
+	m.DELETE("/:memoId", c.Memo.DeleteMemo, ba.ValidateBearerHeader)
 }
 
 // ControllerModule 컨트롤러

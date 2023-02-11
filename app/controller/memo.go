@@ -13,6 +13,8 @@ type (
 	// MemoController MemoController Interface
 	MemoController interface {
 		CreateMemo(c echo.Context) error
+		UpdateMemo(c echo.Context) error
+		DeleteMemo(c echo.Context) error
 	}
 
 	// memoController memoController Struct
