@@ -30,7 +30,7 @@ func (u userService) FindUserStat(userID string) (stat payloads.UserStatPayload,
 	}
 	start := user.CreatedAt
 
-	books_reading, err := u.bookService.FindAllBooks(userID, false)
+	books_reading, err := u.bookService.FindAllBooks(userID, true)
 	if err != nil {
 		return
 	}
@@ -40,21 +40,21 @@ func (u userService) FindUserStat(userID string) (stat payloads.UserStatPayload,
 		return
 	}
 
-	stat.ReadCount = books_reading.Count
+	stat.ReadCount = books_read.Count
 	var end time.Time
-	for _, book := range books_reading.Books {
+	for _, book := range books_read.Books {
 		if end.Sub(book.UpdatedAt) < 0 {
 			end = book.UpdatedAt
 		}
 	}
 
+	stat.MemoCount = countAllMemos(books_reading, books_read)
+	stat.Duration = int64(end.Sub(start).Hours() / 24)
+
 	if end.Sub(start) < 0 {
 		stat.Duration = int64(0)
 		return
 	}
-
-	stat.MemoCount = countAllMemos(books_reading, books_read)
-	stat.Duration = int64(end.Sub(start).Hours() / 24)
 
 	return
 }
