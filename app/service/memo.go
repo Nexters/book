@@ -14,6 +14,13 @@ type CreateMemoParam struct {
 	Category string `json:"category" validate:"required"`
 }
 
+// UpdateMemoParam 메모 생성 parameters
+type UpdateMemoParam struct {
+	MemoID   uint   `json:"bookId" validate:"required"`
+	Text     string `json:"text"`
+	Category string `json:"category"`
+}
+
 var MaxLenError = errors.New("Max character count is 150; length exceeded")
 
 type (
@@ -21,6 +28,8 @@ type (
 	MemoService interface {
 		FindAllMemoByUserAndBookID(userID string, bookID uint) ([]entity.Memo, error)
 		CreateMemo(param CreateMemoParam, uid string) (entity.Memo, error)
+		UpdateMemo(param UpdateMemoParam) (entity.Memo, error)
+		DeleteMemo(memoID uint) (entity.Memo, error)
 	}
 
 	// memoService struct memoService Struct
@@ -48,7 +57,6 @@ func (m memoService) FindAllMemoByUserAndBookID(userID string, bookID uint) (mem
 
 // CreateMemo 메모 생성
 func (m memoService) CreateMemo(param CreateMemoParam, uid string) (memo entity.Memo, err error) {
-	// TODO: update books.updateAt when memo created
 	if err != nil {
 		return
 	}
@@ -60,4 +68,14 @@ func (m memoService) CreateMemo(param CreateMemoParam, uid string) (memo entity.
 
 	memo, err = m.memoRepository.CreateMemo(param.BookID, param.Text, param.Category)
 	return
+}
+
+// UpdateMemo 메모 업데이트
+func (m memoService) UpdateMemo(param UpdateMemoParam) (memo entity.Memo, err error) {
+	return m.memoRepository.UpdateMemo(param.MemoID, param.Text, param.Category)
+}
+
+// DeleteMemo 메모 삭제
+func (m memoService) DeleteMemo(memoID uint) (memo entity.Memo, err error) {
+	return m.memoRepository.DeleteMemo(memoID)
 }
