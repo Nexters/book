@@ -6,6 +6,13 @@ definitions:
     required:
     - ISBN
     type: object
+  controller.UpdateMemoPayload:
+    properties:
+      category:
+        type: string
+      text:
+        type: string
+    type: object
   entity.Book:
     properties:
       ISBN:
@@ -375,6 +382,63 @@ paths:
           schema:
             $ref: '#/definitions/entity.Memo'
       summary: 메모 추가 API
+      tags:
+      - memo
+  /memos/{memoId}:
+    delete:
+      consumes:
+      - application/json
+      description: 특정 사용자가 특정 책에 대해 작성한 특정 메모를 제거하는 API
+      parameters:
+      - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "12345678"
+        in: path
+        name: memoId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: accepted
+          schema:
+            type: string
+      summary: 메모 삭제 API
+      tags:
+      - memo
+    patch:
+      consumes:
+      - application/json
+      description: 특정 사용자가 특정 책에 대해 메모를 수정하는 API
+      parameters:
+      - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "12345678"
+        in: path
+        name: memoId
+        required: true
+        type: string
+      - description: UpdateMemoPayload{}
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/controller.UpdateMemoPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Memo'
+      summary: 메모 수정 API
       tags:
       - memo
   /users:

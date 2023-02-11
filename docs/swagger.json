@@ -292,6 +292,91 @@
                 }
             }
         },
+        "/memos/{memoId}": {
+            "delete": {
+                "description": "특정 사용자가 특정 책에 대해 작성한 특정 메모를 제거하는 API",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "memo"
+                ],
+                "summary": "메모 삭제 API",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "12345678",
+                        "name": "memoId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "accepted",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "특정 사용자가 특정 책에 대해 메모를 수정하는 API",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "memo"
+                ],
+                "summary": "메모 수정 API",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "12345678",
+                        "name": "memoId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "UpdateMemoPayload{}",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.UpdateMemoPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Memo"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "Authorization header의 bearer token을 이용해 사용자 통계를 조회함",
@@ -356,6 +441,17 @@
             ],
             "properties": {
                 "ISBN": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.UpdateMemoPayload": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "text": {
                     "type": "string"
                 }
             }
