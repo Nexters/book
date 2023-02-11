@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"time"
 
 	"github.com/nexters/book/app/config"
@@ -12,6 +13,8 @@ type (
 	MemoRepository interface {
 		FindAllMemoByUserAndBookID(userID uint, bookID uint) ([]entity.Memo, error)
 		CreateMemo(bookID uint, text string, category string) (entity.Memo, error)
+		UpdateMemo(memoID uint, text string, category string) (entity.Memo, error)
+		DeleteMemo(memoID uint) (entity.Memo, error)
 	}
 
 	// memoRepository memoRepository Struct
@@ -71,6 +74,47 @@ func (m memoRepository) FindAllMemoByUserAndBookID(userID uint, bookID uint) (me
 
 	if res := m.db.Where("book_id = ? AND user_id = ?", bookID, userID).Find(&memos); res.Error != nil {
 		err = res.Error
+		return
+	}
+
+	return
+}
+
+// UpdateMemo
+func (m memoRepository) UpdateMemo(memoID uint, text string, category string) (memo entity.Memo, err error) {
+	memo.ID = memoID
+	if len(text) > 0 {
+		memo.Text = text
+	}
+	if len(category) > 0 {
+		memo.Category = category
+	}
+
+	tx := m.db.Model(&memo).Updates(memo)
+
+	if err = tx.Error; err != nil {
+		return
+	}
+
+	if tx.RowsAffected == 0 {
+		err = errors.New("Memo update failed")
+	}
+
+	return
+
+}
+
+// DeleteMemo
+func (m memoRepository) DeleteMemo(memoID uint) (memo entity.Memo, err error) {
+	memo.ID = memoID
+	tx := m.db.Delete(&memo)
+
+	if err = tx.Error; err != nil {
+		return
+	}
+
+	if tx.RowsAffected == 0 {
+		err = errors.New("Memo delete failed")
 		return
 	}
 
