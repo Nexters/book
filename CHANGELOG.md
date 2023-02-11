@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.9.0](https://github.com/Nexters/book/compare/v0.8.3...v0.9.0) (2023-02-11)
+
+
+### Features
+
+* 메모 수정 삭제 도입 ([638ccdd](https://github.com/Nexters/book/commit/638ccdd1b88b34ee8d8030b0f9b3d85a4b1deb4c))
+
+
+### Bug Fixes
+
+* returns total memos when user stat queries ([16792cc](https://github.com/Nexters/book/commit/16792cce59b13b558743e552314b34fd7e39c09d))
+* 전체 메모 개수를 조회하게 user api 수정 ([98789ae](https://github.com/Nexters/book/commit/98789ae136a0914c1afa82e6e968e6f8962d634e))
+
 ## [0.8.3](https://github.com/Nexters/book/compare/v0.8.2...v0.8.3) (2023-02-09)
 
 
