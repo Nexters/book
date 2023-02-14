@@ -1,11 +1,13 @@
-package app
+package http
 
 import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"github.com/nexters/book/app/book"
-	"github.com/nexters/book/app/common/auth"
+
+	"github.com/nexters/book/http/auth"
+
 	"github.com/nexters/book/app/memo"
 	"github.com/nexters/book/app/user"
 	echoSwagger "github.com/swaggo/echo-swagger"

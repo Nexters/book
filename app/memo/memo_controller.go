@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
-	"github.com/nexters/book/app/common/auth"
+	"github.com/nexters/book/http/auth"
 )
 
 type (

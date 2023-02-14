@@ -8,8 +8,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 
-	"github.com/nexters/book/app/common/auth"
 	"github.com/nexters/book/external/search"
+	"github.com/nexters/book/http/auth"
 )
 
 // CreateBookParam 책 생성 parameters
