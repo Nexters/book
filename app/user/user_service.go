@@ -1,29 +1,28 @@
-package service
+package user
 
 import (
 	"time"
 
-	"github.com/nexters/book/app/repository"
-	"github.com/nexters/book/app/service/payloads"
+	"github.com/nexters/book/app/book"
 )
 
 type (
 	UserService interface {
-		FindUserStat(userID string) (payloads.UserStatPayload, error)
+		FindUserStat(userID string) (UserStatPayload, error)
 	}
 	userService struct {
-		userRepo    repository.UserRepository
-		bookService BookService
+		userRepo    UserRepository
+		bookService book.BookService
 	}
 )
 
 // NewUserService 생성자
-func NewUserService(u repository.UserRepository, b BookService) UserService {
+func NewUserService(u UserRepository, b book.BookService) UserService {
 	return userService{u, b}
 }
 
 // FindUserStat 사용자의 통계 조회
-func (u userService) FindUserStat(userID string) (stat payloads.UserStatPayload, err error) {
+func (u userService) FindUserStat(userID string) (stat UserStatPayload, err error) {
 	user, err := u.userRepo.FindUserByUID(userID)
 	if err != nil {
 		return
@@ -60,7 +59,7 @@ func (u userService) FindUserStat(userID string) (stat payloads.UserStatPayload,
 }
 
 // countAllMemos 읽는 중, 완독 모두 카운트
-func countAllMemos(readings payloads.FindAllBooksPayload, reads payloads.FindAllBooksPayload) (memoCount int) {
+func countAllMemos(readings book.FindAllBooksPayload, reads book.FindAllBooksPayload) (memoCount int) {
 	for _, reading := range readings.Books {
 		memoCount += reading.MemoCount
 	}

@@ -1,12 +1,14 @@
 package app
 
 import (
-	r "github.com/nexters/book/app/repository"
+	"github.com/nexters/book/app/book"
+	"github.com/nexters/book/app/memo"
+	"github.com/nexters/book/app/user"
 	"go.uber.org/fx"
 )
 
 // RepositoryModule repository 모듈
 var RepositoryModule = fx.Module(
 	"repository module",
-	fx.Provide(r.NewUserRepository, r.NewMemoRepository, r.NewBookRepository),
+	fx.Provide(user.NewUserRepository, memo.NewMemoRepository, book.NewBookRepository),
 )

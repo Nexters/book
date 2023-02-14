@@ -1,4 +1,4 @@
-package repository
+package book
 
 import (
 	"errors"
