@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/nexters/book/app/auth"
+	"github.com/nexters/book/app/common/auth"
 	"github.com/nexters/book/app/repository"
 	"github.com/nexters/book/app/service"
 	_ "github.com/nexters/book/docs"

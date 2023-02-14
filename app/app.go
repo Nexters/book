@@ -9,10 +9,10 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/nexters/book/app/auth"
-	"github.com/nexters/book/app/config"
-	"github.com/nexters/book/app/config/environment"
+	"github.com/nexters/book/app/common/auth"
 	"github.com/nexters/book/app/entity"
+	"github.com/nexters/book/config"
+	"github.com/nexters/book/config/environment"
 	_ "github.com/nexters/book/docs"
 	"github.com/nexters/book/external/search"
 	"go.uber.org/fx"

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/nexters/book/app/auth"
+	"github.com/nexters/book/app/common/auth"
 	c "github.com/nexters/book/app/controller"
 	echoSwagger "github.com/swaggo/echo-swagger"
 	"go.uber.org/fx"

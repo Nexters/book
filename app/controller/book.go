@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 
-	"github.com/nexters/book/app/auth"
+	"github.com/nexters/book/app/common/auth"
 	"github.com/nexters/book/app/service"
 	"github.com/nexters/book/app/service/payloads"
 	"github.com/nexters/book/external/search"

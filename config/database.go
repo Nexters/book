@@ -3,7 +3,7 @@ package config
 import (
 	"log"
 
-	"github.com/nexters/book/app/config/environment"
+	"github.com/nexters/book/config/environment"
 	"gorm.io/gorm/logger"
 
 	"go.uber.org/fx"
