@@ -8,7 +8,7 @@ import (
 	"net/url"
 
 	jsoniter "github.com/json-iterator/go"
-	"github.com/nexters/book/app/config"
+	"github.com/nexters/book/config"
 )
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary

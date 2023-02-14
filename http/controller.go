@@ -1,27 +1,31 @@
-package app
+package http
 
 import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/nexters/book/app/auth"
-	c "github.com/nexters/book/app/controller"
+	"github.com/nexters/book/app/book"
+
+	"github.com/nexters/book/http/auth"
+
+	"github.com/nexters/book/app/memo"
+	"github.com/nexters/book/app/user"
 	echoSwagger "github.com/swaggo/echo-swagger"
 	"go.uber.org/fx"
 )
 
 // Controller 컨트롤러 구조체
 type Controller struct {
-	Book c.BookController
-	User c.UserController
-	Memo c.MemoController
+	Book book.BookController
+	User user.UserController
+	Memo memo.MemoController
 }
 
 // NewController 생성자
 func NewController(
-	book c.BookController,
-	user c.UserController,
-	memo c.MemoController,
+	book book.BookController,
+	user user.UserController,
+	memo memo.MemoController,
 ) Controller {
 	return Controller{book, user, memo}
 }
@@ -54,9 +58,9 @@ func bindRoute(e *echo.Echo, c Controller, ba auth.BearerAuth) {
 var ControllerModule = fx.Module(
 	"controller",
 	fx.Provide(
-		c.NewBookController,
-		c.NewUserController,
-		c.NewMemoController,
+		book.NewBookController,
+		user.NewUserController,
+		memo.NewMemoController,
 		NewController,
 	),
 	fx.Invoke(bindRoute),

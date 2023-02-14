@@ -1,4 +1,4 @@
-package controller
+package book
 
 import (
 	"log"
@@ -8,10 +8,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 
-	"github.com/nexters/book/app/auth"
-	"github.com/nexters/book/app/service"
-	"github.com/nexters/book/app/service/payloads"
 	"github.com/nexters/book/external/search"
+	"github.com/nexters/book/http/auth"
 )
 
 // CreateBookParam 책 생성 parameters
@@ -34,13 +32,13 @@ type (
 	// bookController bookController Struct
 	bookController struct {
 		bookSearch  search.BookSearch
-		bookService service.BookService
+		bookService BookService
 		auth        auth.BearerAuth
 	}
 )
 
 // NewBookController 생성자
-func NewBookController(s search.BookSearch, svc service.BookService, auth auth.BearerAuth) BookController {
+func NewBookController(s search.BookSearch, svc BookService, auth auth.BearerAuth) BookController {
 	return bookController{s, svc, auth}
 }
 
@@ -210,7 +208,7 @@ func (b bookController) UpdateBook(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnauthorized, err)
 	}
 
-	param := payloads.UpdateBookPayload{}
+	param := UpdateBookPayload{}
 	if err := c.Bind(&param); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}

@@ -1,10 +1,10 @@
-package service
+package memo
 
 import (
 	"errors"
 
 	"github.com/nexters/book/app/entity"
-	"github.com/nexters/book/app/repository"
+	"github.com/nexters/book/app/user"
 )
 
 // CreateMemoParam 메모 생성 parameters
@@ -34,13 +34,13 @@ type (
 
 	// memoService struct memoService Struct
 	memoService struct {
-		memoRepository repository.MemoRepository
-		userRepository repository.UserRepository
+		memoRepository MemoRepository
+		userRepository user.UserRepository
 	}
 )
 
 // NewMemoService 생성자
-func NewMemoService(mr repository.MemoRepository, ur repository.UserRepository) MemoService {
+func NewMemoService(mr MemoRepository, ur user.UserRepository) MemoService {
 	return memoService{mr, ur}
 }
 

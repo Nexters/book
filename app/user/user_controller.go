@@ -1,12 +1,12 @@
-package controller
+package user
 
 import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/nexters/book/app/auth"
-	"github.com/nexters/book/app/repository"
-	"github.com/nexters/book/app/service"
+
+	"github.com/nexters/book/http/auth"
+
 	_ "github.com/nexters/book/docs"
 )
 
@@ -19,14 +19,14 @@ type (
 
 	// userController userController Struct
 	userController struct {
-		repo    repository.UserRepository
+		repo    UserRepository
 		auth    auth.BearerAuth
-		service service.UserService
+		service UserService
 	}
 )
 
 // NewUserController 생성자
-func NewUserController(r repository.UserRepository, auth auth.BearerAuth, s service.UserService) UserController {
+func NewUserController(r UserRepository, auth auth.BearerAuth, s UserService) UserController {
 	return userController{r, auth, s}
 }
 

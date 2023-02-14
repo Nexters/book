@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/nexters/book/app"
+	"github.com/nexters/book/http"
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 )
@@ -22,7 +22,7 @@ func run(cmd *cobra.Command, args []string) {
 			log.Fatal(err)
 		}
 	}
-	fx.New(app.Modules).Run()
+	fx.New(http.Modules).Run()
 }
 
 // rootCmd represents the base command when called without any subcommands

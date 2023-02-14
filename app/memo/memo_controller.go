@@ -1,12 +1,11 @@
-package controller
+package memo
 
 import (
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
-	"github.com/nexters/book/app/auth"
-	"github.com/nexters/book/app/service"
+	"github.com/nexters/book/http/auth"
 )
 
 type (
@@ -19,18 +18,13 @@ type (
 
 	// memoController memoController Struct
 	memoController struct {
-		memoService service.MemoService
+		memoService MemoService
 		auth        auth.BearerAuth
 	}
 )
 
-type UpdateMemoPayload struct {
-	Text     string `json:"text"`
-	Category string `json:"category"`
-}
-
 // NewMemoController 생성자
-func NewMemoController(ms service.MemoService, auth auth.BearerAuth) MemoController {
+func NewMemoController(ms MemoService, auth auth.BearerAuth) MemoController {
 	return memoController{ms, auth}
 }
 
@@ -49,7 +43,7 @@ func (m memoController) CreateMemo(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnauthorized, err)
 	}
 
-	param := service.CreateMemoParam{}
+	param := CreateMemoParam{}
 	if err := c.Bind(&param); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Bad request, check request body")
 	}
@@ -60,7 +54,7 @@ func (m memoController) CreateMemo(c echo.Context) error {
 
 	memo, err := m.memoService.CreateMemo(param, token)
 	if err != nil {
-		if err == service.MaxLenError {
+		if err == MaxLenError {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
@@ -95,9 +89,9 @@ func (m memoController) UpdateMemo(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Bad request, check request body")
 	}
 
-	memo, err := m.memoService.UpdateMemo(service.UpdateMemoParam{MemoID: uint(memoId), Text: param.Text, Category: param.Category})
+	memo, err := m.memoService.UpdateMemo(UpdateMemoParam{MemoID: uint(memoId), Text: param.Text, Category: param.Category})
 	if err != nil {
-		if err == service.MaxLenError {
+		if err == MaxLenError {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 		return echo.NewHTTPError(http.StatusInternalServerError, err)

@@ -1,18 +1,21 @@
-package app
+package http
 
 import (
 	"context"
 	"log"
 	"net/http"
 
+	"github.com/nexters/book/app"
 	"github.com/nexters/book/docs"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/nexters/book/app/auth"
-	"github.com/nexters/book/app/config"
-	"github.com/nexters/book/app/config/environment"
+
+	"github.com/nexters/book/http/auth"
+
 	"github.com/nexters/book/app/entity"
+	"github.com/nexters/book/config"
+	"github.com/nexters/book/config/environment"
 	_ "github.com/nexters/book/docs"
 	"github.com/nexters/book/external/search"
 	"go.uber.org/fx"
@@ -79,8 +82,8 @@ var Modules = fx.Module(
 	fx.Provide(config.NewSettings, echo.New, search.NewBookSearch),
 	config.DBModule,
 	ControllerModule,
-	RepositoryModule,
-	ServiceModule,
+	app.RepositoryModule,
+	app.ServiceModule,
 	auth.BearerAuthModuole,
 	config.ValidatorModule,
 	fx.Invoke(RegisterHooks),
