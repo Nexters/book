@@ -36,6 +36,7 @@ func RegisterHooks(
 
 			go func() {
 				e.Validator = validator
+				e.Use(middleware.Gzip()) // GZip 압축 지원
 				e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 					AllowOrigins:     []string{"http://localhost:3030", "http://localhost:3000", "https://pieceofbook.com", "https://www.pieceofbook.com"},
 					AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAccessControlAllowCredentials, echo.HeaderAuthorization},
