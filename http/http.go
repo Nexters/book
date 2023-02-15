@@ -19,7 +19,6 @@ import (
 	"github.com/nexters/book/external/search"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"gopkg.in/natefinch/lumberjack.v2"
 
 	"go.uber.org/fx"
 )
@@ -31,6 +30,7 @@ func RegisterHooks(
 	settings *config.Settings,
 	db config.Database,
 	validator *config.RequestValidator,
+	logger zerolog.Logger,
 ) {
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
@@ -42,15 +42,6 @@ func RegisterHooks(
 				e.Use(middleware.Gzip()) // GZip 압축 지원
 
 				// logger
-				fileLogger := &lumberjack.Logger{
-					Filename:   "request.log",
-					MaxSize:    10,
-					MaxBackups: 3,
-					MaxAge:     1,
-					Compress:   true,
-				}
-
-				logger := zerolog.New(fileLogger)
 				e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 					LogURI:    true,
 					LogStatus: true,
@@ -75,11 +66,12 @@ func RegisterHooks(
 				configureSwagger(settings)
 
 				if err := db.AutoMigrate(&entity.User{}, &entity.Book{}, &entity.Memo{}); err != nil {
-					log.Fatal(err)
+					log.Fatal().Err(err)
 				}
 
 				if err := e.Start(settings.BindAddress()); err != nil {
-					log.Fatal(err)
+					log.Fatal().Err(err)
+
 				}
 			}()
 
@@ -109,6 +101,7 @@ var Modules = fx.Module(
 	"app",
 	fx.Provide(config.NewSettings, echo.New, search.NewBookSearch),
 	config.DBModule,
+	LoggerModule,
 	ControllerModule,
 	app.RepositoryModule,
 	app.ServiceModule,
