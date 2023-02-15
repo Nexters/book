@@ -2,15 +2,14 @@ package http
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/nexters/book/app"
 	"github.com/nexters/book/docs"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/nexters/book/http/auth"
+	"github.com/nexters/book/http/middlewares"
 
 	"github.com/nexters/book/app/entity"
 	"github.com/nexters/book/config"
@@ -39,39 +38,17 @@ func RegisterHooks(
 
 			go func() {
 				e.Validator = validator
-				e.Use(middleware.Gzip()) // GZip 압축 지원
-
-				// logger
-				e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
-					LogURI:    true,
-					LogStatus: true,
-					LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
-						logger.Info().
-							Str("URI", v.URI).
-							Int("status", v.Status).
-							Msg("request")
-
-						return nil
-					},
-				}))
-
-				e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-					AllowOrigins:     []string{"http://localhost:3030", "http://localhost:3000", "https://pieceofbook.com", "https://www.pieceofbook.com"},
-					AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAccessControlAllowCredentials, echo.HeaderAuthorization},
-					AllowCredentials: true,
-					AllowMethods:     []string{http.MethodGet, http.MethodOptions, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
-				}))
-				// e.Use(middleware.CORS())
+				e.Use(
+					middlewares.Gzip(),
+					middlewares.CORS(),
+					middlewares.RequestLogger(logger),
+				)
 
 				configureSwagger(settings)
-
-				if err := db.AutoMigrate(&entity.User{}, &entity.Book{}, &entity.Memo{}); err != nil {
-					log.Fatal().Err(err)
-				}
+				configureDB(db)
 
 				if err := e.Start(settings.BindAddress()); err != nil {
 					log.Fatal().Err(err)
-
 				}
 			}()
 
@@ -96,9 +73,15 @@ func configureSwagger(settings *config.Settings) {
 	}
 }
 
+func configureDB(db config.Database) {
+	if err := db.AutoMigrate(&entity.User{}, &entity.Book{}, &entity.Memo{}); err != nil {
+		log.Fatal().Err(err)
+	}
+}
+
 // Modules 메인 모듈
 var Modules = fx.Module(
-	"app",
+	"http",
 	fx.Provide(config.NewSettings, echo.New, search.NewBookSearch),
 	config.DBModule,
 	LoggerModule,
