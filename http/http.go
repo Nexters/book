@@ -2,7 +2,6 @@ package http
 
 import (
 	"context"
-	"log"
 	"net/http"
 
 	"github.com/nexters/book/app"
@@ -18,6 +17,10 @@ import (
 	"github.com/nexters/book/config/environment"
 	_ "github.com/nexters/book/docs"
 	"github.com/nexters/book/external/search"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"gopkg.in/natefinch/lumberjack.v2"
+
 	"go.uber.org/fx"
 )
 
@@ -37,6 +40,30 @@ func RegisterHooks(
 			go func() {
 				e.Validator = validator
 				e.Use(middleware.Gzip()) // GZip 압축 지원
+
+				// logger
+				fileLogger := &lumberjack.Logger{
+					Filename:   "request.log",
+					MaxSize:    10,
+					MaxBackups: 3,
+					MaxAge:     1,
+					Compress:   true,
+				}
+
+				logger := zerolog.New(fileLogger)
+				e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
+					LogURI:    true,
+					LogStatus: true,
+					LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
+						logger.Info().
+							Str("URI", v.URI).
+							Int("status", v.Status).
+							Msg("request")
+
+						return nil
+					},
+				}))
+
 				e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 					AllowOrigins:     []string{"http://localhost:3030", "http://localhost:3000", "https://pieceofbook.com", "https://www.pieceofbook.com"},
 					AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAccessControlAllowCredentials, echo.HeaderAuthorization},
