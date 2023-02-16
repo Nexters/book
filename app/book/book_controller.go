@@ -256,6 +256,7 @@ func (b bookController) DeleteBook(c echo.Context) error {
 	return c.String(http.StatusAccepted, "delete success")
 }
 
+// bookRoute /books route 추가 함수
 func bookRoute(e *echo.Echo, c BookController, auth auth.BearerAuth) {
 	b := e.Group("/books", auth.ValidateBearerHeader)
 	b.GET("", c.FetchAll)
@@ -266,6 +267,7 @@ func bookRoute(e *echo.Echo, c BookController, auth auth.BearerAuth) {
 	b.DELETE("/:bookId", c.DeleteBook)
 }
 
+// BookControllerModule book controller를 등록하는 module
 var BookControllerModule = fx.Module(
 	"github.com/nexters/book/app/book/book_controller",
 	fx.Provide(NewBookController),
