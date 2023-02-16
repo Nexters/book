@@ -6,6 +6,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
+	"go.uber.org/fx"
 	"gorm.io/gorm"
 
 	"github.com/nexters/book/external/search"
@@ -254,3 +255,25 @@ func (b bookController) DeleteBook(c echo.Context) error {
 
 	return c.String(http.StatusAccepted, "delete success")
 }
+
+var BookControllerModule = fx.Module(
+	"github.com/nexters/book/app/book/book_controller",
+	fx.Provide(NewBookController),
+	fx.Invoke(func(e *echo.Echo, c BookController, a auth.BearerAuth) {
+		e.Use(a.ValidateBearerHeader)
+		b := e.Group("/books")
+		// b.GET("", c.FetchAll, a.ValidateBearerHeader)
+		// b.GET("/:bookId", c.FindBookAndAllMemosByBookID, a.ValidateBearerHeader)
+		// b.GET("/search", c.Search)
+		// b.POST("", c.CreateBook, a.ValidateBearerHeader)
+		// b.PATCH("/:bookId", c.UpdateBook, a.ValidateBearerHeader)
+		// b.DELETE("/:bookId", c.DeleteBook, a.ValidateBearerHeader)
+		b.GET("", c.FetchAll)
+		b.GET("/:bookId", c.FindBookAndAllMemosByBookID)
+		b.GET("/search", c.Search)
+		b.POST("", c.CreateBook)
+		b.PATCH("/:bookId", c.UpdateBook)
+		b.DELETE("/:bookId", c.DeleteBook)
+
+	}),
+)

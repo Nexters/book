@@ -37,16 +37,16 @@ func bindRoute(e *echo.Echo, c Controller, ba auth.BearerAuth) {
 	})
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
-	b := e.Group("/books")
+	// b := e.Group("/books")
 	u := e.Group("/users")
 	m := e.Group("/memos")
-	b.GET("", c.Book.FetchAll, ba.ValidateBearerHeader)
-	b.GET("/:bookId", c.Book.FindBookAndAllMemosByBookID, ba.ValidateBearerHeader)
-	// b.GET("/:isbn", c.Book.FindBookByISBN, ba.ValidateBearerHeader)
-	b.GET("/search", c.Book.Search)
-	b.POST("", c.Book.CreateBook, ba.ValidateBearerHeader)
-	b.PATCH("/:bookId", c.Book.UpdateBook, ba.ValidateBearerHeader)
-	b.DELETE("/:bookId", c.Book.DeleteBook, ba.ValidateBearerHeader)
+	// b.GET("", c.Book.FetchAll, ba.ValidateBearerHeader)
+	// b.GET("/:bookId", c.Book.FindBookAndAllMemosByBookID, ba.ValidateBearerHeader)
+	// // b.GET("/:isbn", c.Book.FindBookByISBN, ba.ValidateBearerHeader)
+	// b.GET("/search", c.Book.Search)
+	// b.POST("", c.Book.CreateBook, ba.ValidateBearerHeader)
+	// b.PATCH("/:bookId", c.Book.UpdateBook, ba.ValidateBearerHeader)
+	// b.DELETE("/:bookId", c.Book.DeleteBook, ba.ValidateBearerHeader)
 	u.GET("/token", c.User.CreateUserAndToken)
 	u.GET("", c.User.FindUser, ba.ValidateBearerHeader)
 	m.POST("", c.Memo.CreateMemo, ba.ValidateBearerHeader)
@@ -63,5 +63,6 @@ var ControllerModule = fx.Module(
 		memo.NewMemoController,
 		NewController,
 	),
+	book.BookControllerModule,
 	fx.Invoke(bindRoute),
 )
