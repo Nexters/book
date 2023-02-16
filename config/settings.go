@@ -2,7 +2,8 @@ package config
 
 import (
 	"fmt"
-	"log"
+
+	"github.com/rs/zerolog/log"
 
 	env "github.com/Netflix/go-env"
 )
@@ -40,7 +41,7 @@ func NewSettings() *Settings {
 
 	extras, err := env.UnmarshalFromEnviron(&settings)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	settings.Extras = extras

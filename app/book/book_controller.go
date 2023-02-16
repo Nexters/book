@@ -1,11 +1,11 @@
 package book
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 
 	"github.com/nexters/book/external/search"
@@ -155,7 +155,7 @@ func (b bookController) Search(c echo.Context) error {
 	title := c.QueryParam("title")
 	res, err := b.bookSearch.SearchBook(title)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	return c.JSON(http.StatusOK, res.Items)

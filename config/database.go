@@ -1,7 +1,7 @@
 package config
 
 import (
-	"log"
+	"github.com/rs/zerolog/log"
 
 	"github.com/nexters/book/config/environment"
 	"gorm.io/gorm/logger"
@@ -24,7 +24,7 @@ func NewDatabase(settings *Settings, dialector MySQLDialector) Database {
 	db, err := gorm.Open(dialector, &config)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	return Database{db}

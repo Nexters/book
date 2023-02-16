@@ -3,7 +3,7 @@ package search
 import (
 	"fmt"
 	"io"
-	"log"
+
 	"net/http"
 	"net/url"
 
@@ -46,29 +46,29 @@ func NewBookSearch(s *config.Settings) BookSearch {
 	return bookSearch{s}
 }
 
-func (b bookSearch) SearchBook(query string) (SearchResponse, error) {
+func (b bookSearch) SearchBook(query string) (searchRes SearchResponse, err error) {
 	url := fmt.Sprintf("%v?query=%v", b.settings.External.SearchEndpoint, url.QueryEscape(query))
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
+
 	req.Header.Add("X-Naver-Client-Id", b.settings.External.ClientID)
 	req.Header.Add("X-Naver-Client-Secret", b.settings.External.ClientSecret)
 	client := &http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
+
 	result, err := io.ReadAll(res.Body)
 
-	searchResponse := SearchResponse{}
-
-	err = json.Unmarshal(result, &searchResponse)
+	err = json.Unmarshal(result, &searchRes)
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 
 	res.Body.Close()
 
-	return searchResponse, nil
+	return searchRes, nil
 }
