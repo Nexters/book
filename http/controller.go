@@ -58,7 +58,6 @@ func bindRoute(e *echo.Echo, c Controller, ba auth.BearerAuth) {
 var ControllerModule = fx.Module(
 	"controller",
 	fx.Provide(
-		book.NewBookController,
 		user.NewUserController,
 		memo.NewMemoController,
 		NewController,
