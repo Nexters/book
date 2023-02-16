@@ -80,7 +80,7 @@ func userRoute(e *echo.Echo, c UserController, auth auth.BearerAuth) {
 
 // UserControllerModule user controller를 등록하는 module
 var UserControllerModule = fx.Module(
-	"github.com/nexters/book/app/book/user_controller",
+	"github.com/nexters/book/app/user/user_controller",
 	fx.Provide(NewUserController),
 	fx.Invoke(userRoute),
 )

@@ -37,20 +37,17 @@ func bindRoute(e *echo.Echo, c Controller, ba auth.BearerAuth) {
 	})
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
-	m := e.Group("/memos")
-	m.POST("", c.Memo.CreateMemo, ba.ValidateBearerHeader)
-	m.PATCH("/:memoId", c.Memo.UpdateMemo, ba.ValidateBearerHeader)
-	m.DELETE("/:memoId", c.Memo.DeleteMemo, ba.ValidateBearerHeader)
+
 }
 
 // ControllerModule 컨트롤러
 var ControllerModule = fx.Module(
 	"controller",
 	fx.Provide(
-		memo.NewMemoController,
 		NewController,
 	),
 	book.BookControllerModule,
 	user.UserControllerModule,
+	memo.MemoControllerModule,
 	fx.Invoke(bindRoute),
 )
