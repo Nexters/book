@@ -61,8 +61,6 @@ func (b bookSearch) SearchBook(query string) (searchRes SearchResponse, err erro
 		return
 	}
 
-	defer res.Body.Close()
-
 	result, err := io.ReadAll(res.Body)
 
 	err = json.Unmarshal(result, &searchRes)
