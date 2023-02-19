@@ -4,10 +4,11 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"log"
+	"github.com/rs/zerolog/log"
+
 	"os"
 
-	"github.com/nexters/book/app"
+	"github.com/nexters/book/http"
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 )
@@ -19,10 +20,10 @@ func run(cmd *cobra.Command, args []string) {
 	if Port != "" {
 		err := os.Setenv("PORT", Port)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal().Err(err)
 		}
 	}
-	fx.New(app.Modules).Run()
+	fx.New(http.Modules).Run()
 }
 
 // rootCmd represents the base command when called without any subcommands
@@ -37,7 +38,7 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 }
 

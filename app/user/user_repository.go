@@ -1,12 +1,12 @@
-package repository
+package user
 
 import (
 	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/nexters/book/app/config"
 	"github.com/nexters/book/app/entity"
+	"github.com/nexters/book/config"
 )
 
 type (

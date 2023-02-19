@@ -2,13 +2,12 @@ package search
 
 import (
 	"fmt"
-	"io"
-	"log"
-	"net/http"
+
 	"net/url"
 
 	jsoniter "github.com/json-iterator/go"
-	"github.com/nexters/book/app/config"
+	"github.com/nexters/book/config"
+	"github.com/nexters/book/http/requests"
 )
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
@@ -34,6 +33,7 @@ type SearchItem struct {
 }
 
 type (
+	// BookSearch 외부 API를 이용한 책 검색
 	BookSearch interface {
 		SearchBook(query string) (SearchResponse, error)
 	}
@@ -42,33 +42,24 @@ type (
 	}
 )
 
+// NewBookSearch 생성자
 func NewBookSearch(s *config.Settings) BookSearch {
 	return bookSearch{s}
 }
 
-func (b bookSearch) SearchBook(query string) (SearchResponse, error) {
+// SearchBook search book description via external api
+func (b bookSearch) SearchBook(query string) (res SearchResponse, err error) {
 	url := fmt.Sprintf("%v?query=%v", b.settings.External.SearchEndpoint, url.QueryEscape(query))
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	req.Header.Add("X-Naver-Client-Id", b.settings.External.ClientID)
-	req.Header.Add("X-Naver-Client-Secret", b.settings.External.ClientSecret)
-	client := &http.Client{}
-	res, err := client.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
-	result, err := io.ReadAll(res.Body)
 
-	searchResponse := SearchResponse{}
+	requests := requests.NewHttp[SearchResponse](
+		map[string]string{
+			"X-Naver-Client-Id":     b.settings.External.ClientID,
+			"X-Naver-Client-Secret": b.settings.External.ClientSecret,
+		},
+	)
 
-	err = json.Unmarshal(result, &searchResponse)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// make request
+	res, err = requests.GET(url)
 
-	res.Body.Close()
-
-	return searchResponse, nil
+	return
 }

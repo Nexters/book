@@ -1,11 +1,7 @@
-package service
+package book
 
 import (
-	"log"
-
 	"github.com/nexters/book/app/entity"
-	"github.com/nexters/book/app/repository"
-	"github.com/nexters/book/app/service/payloads"
 	"github.com/nexters/book/external/search"
 )
 
@@ -13,22 +9,22 @@ type (
 	// BookService BookService Interface
 	BookService interface {
 		CreateBook(ISBN string, userID string) (entity.Book, error)
-		FindBookByISBN(ISBN string, category string) (payloads.FindBookPayload, error)
-		FindAllBooks(userID string, isReading bool) (payloads.FindAllBooksPayload, error)
-		FindBookAndAllMemosByBookID(bookID uint, category string) (payloads.FindBookPayload, error)
+		FindBookByISBN(ISBN string, category string) (FindBookPayload, error)
+		FindAllBooks(userID string, isReading bool) (FindAllBooksPayload, error)
+		FindBookAndAllMemosByBookID(bookID uint, category string) (FindBookPayload, error)
 		UpdateBook(bookID uint, isReading bool) (entity.Book, error)
 		DeleteBook(bookID uint, userID string) (entity.Book, error)
 	}
 
 	// bookService bookService Struct
 	bookService struct {
-		repo       repository.BookRepository
+		repo       BookRepository
 		bookSearch search.BookSearch
 	}
 )
 
 // NewBookService 생성자
-func NewBookService(repo repository.BookRepository, bs search.BookSearch) BookService {
+func NewBookService(repo BookRepository, bs search.BookSearch) BookService {
 	return bookService{repo, bs}
 }
 
@@ -37,11 +33,10 @@ func (b bookService) CreateBook(ISBN string, userID string) (entity.Book, error)
 	// search naver
 	searchedRes, err := b.bookSearch.SearchBook(ISBN)
 	if err != nil {
-		log.Fatal(err)
 		return entity.Book{}, err
 	}
 
-	book := repository.CreateBookParams{
+	book := CreateBookParams{
 		UserID: userID,
 	}
 
@@ -68,17 +63,17 @@ func (b bookService) CreateBook(ISBN string, userID string) (entity.Book, error)
 }
 
 // FindAllBooks 책 조회
-func (b bookService) FindAllBooks(userID string, isReading bool) (payload payloads.FindAllBooksPayload, err error) {
+func (b bookService) FindAllBooks(userID string, isReading bool) (payload FindAllBooksPayload, err error) {
 
 	books, err := b.repo.FindAllBooks(userID, isReading)
 	if err != nil {
 		return
 	}
 
-	payload.Books = make([]payloads.FindBookPayload, 0)
+	payload.Books = make([]FindBookPayload, 0)
 	for _, book := range books {
 		Memocount := len(book.Memos)
-		bookPayload := payloads.FindBookPayload{
+		bookPayload := FindBookPayload{
 			Book:      book,
 			MemoCount: Memocount,
 		}
@@ -91,14 +86,14 @@ func (b bookService) FindAllBooks(userID string, isReading bool) (payload payloa
 }
 
 // FindBookAndAllMemosByBookID
-func (b bookService) FindBookAndAllMemosByBookID(bookID uint, category string) (payload payloads.FindBookPayload, err error) {
+func (b bookService) FindBookAndAllMemosByBookID(bookID uint, category string) (payload FindBookPayload, err error) {
 	book, err := b.repo.FindBookAndAllMemosByBookID(bookID)
 	if err != nil {
 		return
 	}
 
 	memoCount := len(book.Memos)
-	payload = payloads.FindBookPayload{
+	payload = FindBookPayload{
 		Book:      book,
 		MemoCount: memoCount,
 	}
@@ -121,14 +116,14 @@ func (b bookService) FindBookAndAllMemosByBookID(bookID uint, category string) (
 }
 
 // FindBooksByISBN ISBN으로 책 조회
-func (b bookService) FindBookByISBN(ISBN string, category string) (payload payloads.FindBookPayload, err error) {
+func (b bookService) FindBookByISBN(ISBN string, category string) (payload FindBookPayload, err error) {
 	book, err := b.repo.FindBookByISBN(ISBN)
 	if err != nil {
 		return
 	}
 
 	memoCount := len(book.Memos)
-	payload = payloads.FindBookPayload{
+	payload = FindBookPayload{
 		Book:      book,
 		MemoCount: memoCount,
 	}

@@ -3,7 +3,7 @@ package auth_test
 import (
 	"testing"
 
-	"github.com/nexters/book/app/auth"
+	"github.com/nexters/book/http/auth"
 	"github.com/stretchr/testify/assert"
 )
 

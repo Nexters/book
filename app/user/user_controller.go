@@ -1,12 +1,13 @@
-package controller
+package user
 
 import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/nexters/book/app/auth"
-	"github.com/nexters/book/app/repository"
-	"github.com/nexters/book/app/service"
+	"go.uber.org/fx"
+
+	"github.com/nexters/book/http/auth"
+
 	_ "github.com/nexters/book/docs"
 )
 
@@ -19,14 +20,14 @@ type (
 
 	// userController userController Struct
 	userController struct {
-		repo    repository.UserRepository
+		repo    UserRepository
 		auth    auth.BearerAuth
-		service service.UserService
+		service UserService
 	}
 )
 
 // NewUserController 생성자
-func NewUserController(r repository.UserRepository, auth auth.BearerAuth, s service.UserService) UserController {
+func NewUserController(r UserRepository, auth auth.BearerAuth, s UserService) UserController {
 	return userController{r, auth, s}
 }
 
@@ -69,3 +70,17 @@ func (u userController) FindUser(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, user)
 }
+
+// userRoute user route 등록 함수
+func userRoute(e *echo.Echo, c UserController, auth auth.BearerAuth) {
+	u := e.Group("/users")
+	u.GET("/token", c.CreateUserAndToken)
+	u.GET("", c.FindUser, auth.ValidateBearerHeader)
+}
+
+// UserControllerModule user controller를 등록하는 module
+var UserControllerModule = fx.Module(
+	"github.com/nexters/book/app/user/user_controller",
+	fx.Provide(NewUserController),
+	fx.Invoke(userRoute),
+)
