@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.9.1](https://github.com/Nexters/book/compare/v0.9.0...v0.9.1) (2023-02-19)
+
+
+### Bug Fixes
+
+* import path ([24febb1](https://github.com/Nexters/book/commit/24febb131f3ad7a3adf88c4c7a376e5665130dc9))
+* potential memory leak ([d57a919](https://github.com/Nexters/book/commit/d57a919bdd0d3cb5a90473caad17679cba088574))
+* remove deferring ([c2db513](https://github.com/Nexters/book/commit/c2db5138532fde2fecc98e7edb864852181929ce))
+* wrap error inside defer ([ac5baf6](https://github.com/Nexters/book/commit/ac5baf617c999953c3dd62b37c01145623c823c8))
+
 ## [0.9.0](https://github.com/Nexters/book/compare/v0.8.3...v0.9.0) (2023-02-11)
 
 
