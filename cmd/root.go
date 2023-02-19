@@ -4,7 +4,8 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"log"
+	"github.com/rs/zerolog/log"
+
 	"os"
 
 	"github.com/nexters/book/http"
@@ -19,7 +20,7 @@ func run(cmd *cobra.Command, args []string) {
 	if Port != "" {
 		err := os.Setenv("PORT", Port)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal().Err(err)
 		}
 	}
 	fx.New(http.Modules).Run()
@@ -37,7 +38,7 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 }
 

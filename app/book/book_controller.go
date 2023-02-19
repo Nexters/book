@@ -1,11 +1,12 @@
 package book
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog/log"
+	"go.uber.org/fx"
 	"gorm.io/gorm"
 
 	"github.com/nexters/book/external/search"
@@ -155,7 +156,7 @@ func (b bookController) Search(c echo.Context) error {
 	title := c.QueryParam("title")
 	res, err := b.bookSearch.SearchBook(title)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	return c.JSON(http.StatusOK, res.Items)
@@ -254,3 +255,21 @@ func (b bookController) DeleteBook(c echo.Context) error {
 
 	return c.String(http.StatusAccepted, "delete success")
 }
+
+// bookRoute /books route 추가 함수
+func bookRoute(e *echo.Echo, c BookController, auth auth.BearerAuth) {
+	b := e.Group("/books", auth.ValidateBearerHeader)
+	b.GET("", c.FetchAll)
+	b.GET("/:bookId", c.FindBookAndAllMemosByBookID)
+	b.GET("/search", c.Search)
+	b.POST("", c.CreateBook)
+	b.PATCH("/:bookId", c.UpdateBook)
+	b.DELETE("/:bookId", c.DeleteBook)
+}
+
+// BookControllerModule book controller를 등록하는 module
+var BookControllerModule = fx.Module(
+	"github.com/nexters/book/app/book/book_controller",
+	fx.Provide(NewBookController),
+	fx.Invoke(bookRoute),
+)

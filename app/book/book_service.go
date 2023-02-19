@@ -1,8 +1,6 @@
 package book
 
 import (
-	"log"
-
 	"github.com/nexters/book/app/entity"
 	"github.com/nexters/book/external/search"
 )
@@ -35,7 +33,6 @@ func (b bookService) CreateBook(ISBN string, userID string) (entity.Book, error)
 	// search naver
 	searchedRes, err := b.bookSearch.SearchBook(ISBN)
 	if err != nil {
-		log.Fatal(err)
 		return entity.Book{}, err
 	}
 

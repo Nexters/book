@@ -2,7 +2,8 @@ package config
 
 import (
 	"fmt"
-	"log"
+
+	"github.com/rs/zerolog/log"
 
 	env "github.com/Netflix/go-env"
 )
@@ -14,6 +15,7 @@ type Settings struct {
 		Port     int    `env:"PORT" json:"port"`
 		API_HOST string `env:"API_HOST"`
 		ENV      string `env:"ENV" json:"env"`
+		LOGGER   string `env:"LOGGER" json:"logger"`
 	}
 
 	// Database DB 환경변수
@@ -40,7 +42,7 @@ func NewSettings() *Settings {
 
 	extras, err := env.UnmarshalFromEnviron(&settings)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	settings.Extras = extras

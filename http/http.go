@@ -2,22 +2,23 @@ package http
 
 import (
 	"context"
-	"log"
-	"net/http"
 
 	"github.com/nexters/book/app"
 	"github.com/nexters/book/docs"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/nexters/book/http/auth"
+	"github.com/nexters/book/http/middlewares"
 
 	"github.com/nexters/book/app/entity"
 	"github.com/nexters/book/config"
 	"github.com/nexters/book/config/environment"
 	_ "github.com/nexters/book/docs"
 	"github.com/nexters/book/external/search"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+
 	"go.uber.org/fx"
 )
 
@@ -28,6 +29,7 @@ func RegisterHooks(
 	settings *config.Settings,
 	db config.Database,
 	validator *config.RequestValidator,
+	logger zerolog.Logger,
 ) {
 	lifecycle.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
@@ -36,22 +38,17 @@ func RegisterHooks(
 
 			go func() {
 				e.Validator = validator
-				e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-					AllowOrigins:     []string{"http://localhost:3030", "http://localhost:3000", "https://pieceofbook.com", "https://www.pieceofbook.com"},
-					AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAccessControlAllowCredentials, echo.HeaderAuthorization},
-					AllowCredentials: true,
-					AllowMethods:     []string{http.MethodGet, http.MethodOptions, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
-				}))
-				// e.Use(middleware.CORS())
+				e.Use(
+					middlewares.Gzip(),
+					middlewares.CORS(),
+					middlewares.RequestLogger(logger),
+				)
 
 				configureSwagger(settings)
-
-				if err := db.AutoMigrate(&entity.User{}, &entity.Book{}, &entity.Memo{}); err != nil {
-					log.Fatal(err)
-				}
+				configureDB(db)
 
 				if err := e.Start(settings.BindAddress()); err != nil {
-					log.Fatal(err)
+					log.Fatal().Err(err)
 				}
 			}()
 
@@ -76,11 +73,18 @@ func configureSwagger(settings *config.Settings) {
 	}
 }
 
+func configureDB(db config.Database) {
+	if err := db.AutoMigrate(&entity.User{}, &entity.Book{}, &entity.Memo{}); err != nil {
+		log.Fatal().Err(err)
+	}
+}
+
 // Modules 메인 모듈
 var Modules = fx.Module(
-	"app",
+	"http",
 	fx.Provide(config.NewSettings, echo.New, search.NewBookSearch),
 	config.DBModule,
+	LoggerModule,
 	ControllerModule,
 	app.RepositoryModule,
 	app.ServiceModule,

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"go.uber.org/fx"
 
 	"github.com/nexters/book/http/auth"
 
@@ -69,3 +70,17 @@ func (u userController) FindUser(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, user)
 }
+
+// userRoute user route 등록 함수
+func userRoute(e *echo.Echo, c UserController, auth auth.BearerAuth) {
+	u := e.Group("/users")
+	u.GET("/token", c.CreateUserAndToken)
+	u.GET("", c.FindUser, auth.ValidateBearerHeader)
+}
+
+// UserControllerModule user controller를 등록하는 module
+var UserControllerModule = fx.Module(
+	"github.com/nexters/book/app/user/user_controller",
+	fx.Provide(NewUserController),
+	fx.Invoke(userRoute),
+)

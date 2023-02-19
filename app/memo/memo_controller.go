@@ -6,6 +6,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/nexters/book/http/auth"
+	"go.uber.org/fx"
 )
 
 type (
@@ -127,3 +128,18 @@ func (m memoController) DeleteMemo(c echo.Context) error {
 
 	return c.String(http.StatusAccepted, "delete success")
 }
+
+// memoRoute 메모 route를 바인딩하는 함수
+func memoRoute(e *echo.Echo, c MemoController, auth auth.BearerAuth) {
+	m := e.Group("/memos", auth.ValidateBearerHeader)
+	m.POST("", c.CreateMemo)
+	m.PATCH("/:memoId", c.UpdateMemo)
+	m.DELETE("/:memoId", c.DeleteMemo)
+}
+
+// MemoControllerModule memo controller 모듈
+var MemoControllerModule = fx.Module(
+	"github.com/nexters/book/app/memo/memo_controller",
+	fx.Provide(NewMemoController),
+	fx.Invoke(memoRoute),
+)
