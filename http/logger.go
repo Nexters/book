@@ -1,14 +1,15 @@
 package http
 
 import (
+	"github.com/nexters/book/config"
 	"github.com/rs/zerolog"
 	"go.uber.org/fx"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-func NewFileLogger() *lumberjack.Logger {
+func NewFileLogger(settings *config.Settings) *lumberjack.Logger {
 	return &lumberjack.Logger{
-		Filename:   "request.log",
+		Filename:   settings.App.LOGGER,
 		MaxSize:    10,
 		MaxBackups: 3,
 		MaxAge:     1,
