@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	jsoniter "github.com/json-iterator/go"
+	"github.com/rs/zerolog/log"
 )
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
@@ -49,7 +50,13 @@ func (h httpRequest[T]) POST(url string, body interface{}) (res T, err error) {
 	if err != nil {
 		return
 	}
-	defer resp.Body.Close()
+
+	defer func() {
+
+		if err := resp.Body.Close(); err != nil {
+			log.Error().Err(err)
+		}
+	}()
 
 	resBody, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -79,7 +86,13 @@ func (h httpRequest[T]) GET(url string) (res T, err error) {
 	if err != nil {
 		return
 	}
-	defer resp.Body.Close()
+
+	defer func() {
+
+		if err := resp.Body.Close(); err != nil {
+			log.Error().Err(err)
+		}
+	}()
 
 	resBody, err := io.ReadAll(resp.Body)
 	if err != nil {
