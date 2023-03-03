@@ -35,7 +35,7 @@ func NewMemoController(ms MemoService, auth auth.BearerAuth) MemoController {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
-// @Param body body service.CreateMemoParam true "service.CreateMemoParam{}"
+// @Param body body CreateMemoParam true "CreateMemoParam{}"
 // @Success 201 {object} entity.Memo
 // @Router /memos [post]
 func (m memoController) CreateMemo(c echo.Context) error {

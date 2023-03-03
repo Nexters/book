@@ -2,6 +2,7 @@ package search
 
 import (
 	"fmt"
+	"strconv"
 
 	"net/url"
 
@@ -11,6 +12,7 @@ import (
 )
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
+var display = 10
 
 type SearchResponse struct {
 	LastBuildDate string       `json:"lastBuildDate"`
@@ -35,7 +37,7 @@ type SearchItem struct {
 type (
 	// BookSearch 외부 API를 이용한 책 검색
 	BookSearch interface {
-		SearchBook(query string) (SearchResponse, error)
+		SearchBook(query string, page string) (SearchResponse, error)
 	}
 	bookSearch struct {
 		settings *config.Settings
@@ -48,9 +50,8 @@ func NewBookSearch(s *config.Settings) BookSearch {
 }
 
 // SearchBook search book description via external api
-func (b bookSearch) SearchBook(query string) (res SearchResponse, err error) {
-	url := fmt.Sprintf("%v?query=%v", b.settings.External.SearchEndpoint, url.QueryEscape(query))
-
+func (b bookSearch) SearchBook(query string, page string) (res SearchResponse, err error) {
+	// make request
 	requests := requests.NewHttp[SearchResponse](
 		map[string]string{
 			"X-Naver-Client-Id":     b.settings.External.ClientID,
@@ -58,8 +59,34 @@ func (b bookSearch) SearchBook(query string) (res SearchResponse, err error) {
 		},
 	)
 
-	// make request
-	res, err = requests.GET(url)
+	// page가 주어진 경우
+	if len(page) > 0 {
+		n, parse_err := strconv.ParseInt(page, 10, 64)
+		if err != nil {
+			err = parse_err
+			return
+		}
 
+		start := n + ((n - 1) * (int64(display)))
+		uri := fmt.Sprintf(
+			"%v?query=%v&display=%d&start=%d",
+			b.settings.External.SearchEndpoint,
+			url.QueryEscape(query),
+			display,
+			start,
+		)
+
+		res, err = requests.GET(uri)
+		return
+	}
+
+	// LEGACY: page가 주어지지 않은 경우
+	uri := fmt.Sprintf(
+		"%v?query=%v",
+		b.settings.External.SearchEndpoint,
+		url.QueryEscape(query),
+	)
+
+	res, err = requests.GET(uri)
 	return
 }

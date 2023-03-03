@@ -49,7 +49,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/payloads.FindAllBooksPayload"
+                            "$ref": "#/definitions/book.FindAllBooksPayload"
                         }
                     }
                 }
@@ -80,7 +80,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controller.CreateBookParam"
+                            "$ref": "#/definitions/book.CreateBookParam"
                         }
                     }
                 ],
@@ -110,8 +110,22 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "미움받을 용기",
                         "name": "title",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "1",
+                        "name": "page",
                         "in": "query",
                         "required": true
                     }
@@ -237,12 +251,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "payloads.UpdateBookPayload{}",
+                        "description": "UpdateBookPayload{}",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/payloads.UpdateBookPayload"
+                            "$ref": "#/definitions/book.UpdateBookPayload"
                         }
                     },
                     {
@@ -285,12 +299,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "service.CreateMemoParam{}",
+                        "description": "CreateMemoParam{}",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/service.CreateMemoParam"
+                            "$ref": "#/definitions/memo.CreateMemoParam"
                         }
                     }
                 ],
@@ -375,7 +389,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controller.UpdateMemoPayload"
+                            "$ref": "#/definitions/memo.UpdateMemoPayload"
                         }
                     }
                 ],
@@ -415,7 +429,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/payloads.UserStatPayload"
+                            "$ref": "#/definitions/user.UserStatPayload"
                         }
                     }
                 }
@@ -446,7 +460,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "controller.CreateBookParam": {
+        "book.CreateBookParam": {
             "type": "object",
             "required": [
                 "ISBN"
@@ -457,14 +471,84 @@ const docTemplate = `{
                 }
             }
         },
-        "controller.UpdateMemoPayload": {
+        "book.FindAllBooksPayload": {
             "type": "object",
             "properties": {
-                "category": {
+                "books": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/book.FindBookPayload"
+                    }
+                },
+                "count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "book.FindBookPayload": {
+            "type": "object",
+            "properties": {
+                "ISBN": {
                     "type": "string"
                 },
-                "text": {
+                "author": {
                     "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "isReading": {
+                    "type": "boolean"
+                },
+                "memoCount": {
+                    "type": "integer"
+                },
+                "memos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Memo"
+                    }
+                },
+                "price": {
+                    "type": "string"
+                },
+                "publisher": {
+                    "type": "string"
+                },
+                "shopLink": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "book.UpdateBookPayload": {
+            "type": "object",
+            "required": [
+                "isReading"
+            ],
+            "properties": {
+                "isReading": {
+                    "type": "boolean"
                 }
             }
         },
@@ -588,98 +672,33 @@ const docTemplate = `{
                 }
             }
         },
-        "payloads.FindAllBooksPayload": {
-            "type": "object",
-            "properties": {
-                "books": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/payloads.FindBookPayload"
-                    }
-                },
-                "count": {
-                    "type": "integer"
-                }
-            }
-        },
-        "payloads.FindBookPayload": {
-            "type": "object",
-            "properties": {
-                "ISBN": {
-                    "type": "string"
-                },
-                "author": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "$ref": "#/definitions/gorm.DeletedAt"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "image": {
-                    "type": "string"
-                },
-                "isReading": {
-                    "type": "boolean"
-                },
-                "memoCount": {
-                    "type": "integer"
-                },
-                "memos": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Memo"
-                    }
-                },
-                "price": {
-                    "type": "string"
-                },
-                "publisher": {
-                    "type": "string"
-                },
-                "shopLink": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "userId": {
-                    "type": "integer"
-                }
-            }
-        },
-        "payloads.UpdateBookPayload": {
+        "memo.CreateMemoParam": {
             "type": "object",
             "required": [
-                "isReading"
+                "bookId",
+                "category",
+                "text"
             ],
             "properties": {
-                "isReading": {
-                    "type": "boolean"
+                "bookId": {
+                    "type": "integer"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
                 }
             }
         },
-        "payloads.UserStatPayload": {
+        "memo.UpdateMemoPayload": {
             "type": "object",
             "properties": {
-                "duration": {
-                    "type": "integer"
+                "category": {
+                    "type": "string"
                 },
-                "memoCount": {
-                    "type": "integer"
-                },
-                "readCount": {
-                    "type": "integer"
+                "text": {
+                    "type": "string"
                 }
             }
         },
@@ -715,22 +734,17 @@ const docTemplate = `{
                 }
             }
         },
-        "service.CreateMemoParam": {
+        "user.UserStatPayload": {
             "type": "object",
-            "required": [
-                "bookId",
-                "category",
-                "text"
-            ],
             "properties": {
-                "bookId": {
+                "duration": {
                     "type": "integer"
                 },
-                "category": {
-                    "type": "string"
+                "memoCount": {
+                    "type": "integer"
                 },
-                "text": {
-                    "type": "string"
+                "readCount": {
+                    "type": "integer"
                 }
             }
         }

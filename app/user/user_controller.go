@@ -53,7 +53,7 @@ func (u userController) CreateUserAndToken(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
-// @Success 200 {object} payloads.UserStatPayload
+// @Success 200 {object} UserStatPayload
 // @Router /users [get]
 func (u userController) FindUser(c echo.Context) error {
 	token, err := u.auth.GetToken(c)
