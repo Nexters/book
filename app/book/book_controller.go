@@ -50,7 +50,7 @@ func NewBookController(s search.BookSearch, svc BookService, auth auth.BearerAut
 // @Produce json
 // @Param isReading query bool true "default = true"
 // @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
-// @Success 200 {object} payloads.FindAllBooksPayload
+// @Success 200 {object} FindAllBooksPayload
 // @Router /books [get]
 func (b bookController) FetchAll(c echo.Context) error {
 	isReading := c.QueryParam("isReading")
@@ -149,12 +149,15 @@ func (b bookController) FindBookAndAllMemosByBookID(c echo.Context) error {
 // @Description Naver API를 이용해 책을 검색하게 하는 API query string으로 title을 넘기면 검색 결과를 반환.
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
 // @Param title query string true "미움받을 용기"
+// @Param page query int true "1"
 // @Success 200 {object} []search.SearchItem
 // @Router /books/search [get]
 func (b bookController) Search(c echo.Context) error {
 	title := c.QueryParam("title")
-	res, err := b.bookSearch.SearchBook(title)
+	page := c.QueryParam("page")
+	res, err := b.bookSearch.SearchBook(title, page)
 	if err != nil {
 		log.Fatal().Err(err)
 	}
@@ -199,7 +202,7 @@ func (b bookController) CreateBook(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec"
-// @Param request body payloads.UpdateBookPayload true "payloads.UpdateBookPayload{}"
+// @Param request body UpdateBookPayload true "UpdateBookPayload{}"
 // @Param bookId path string true "12345678"
 // @Success 200 {object} entity.Book "entity.Book{}"
 // @Router /books/{bookId} [patch]

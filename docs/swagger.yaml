@@ -1,17 +1,63 @@
 definitions:
-  controller.CreateBookParam:
+  book.CreateBookParam:
     properties:
       ISBN:
         type: string
     required:
     - ISBN
     type: object
-  controller.UpdateMemoPayload:
+  book.FindAllBooksPayload:
     properties:
-      category:
+      books:
+        items:
+          $ref: '#/definitions/book.FindBookPayload'
+        type: array
+      count:
+        type: integer
+    type: object
+  book.FindBookPayload:
+    properties:
+      ISBN:
         type: string
-      text:
+      author:
         type: string
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      isReading:
+        type: boolean
+      memoCount:
+        type: integer
+      memos:
+        items:
+          $ref: '#/definitions/entity.Memo'
+        type: array
+      price:
+        type: string
+      publisher:
+        type: string
+      shopLink:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: integer
+    type: object
+  book.UpdateBookPayload:
+    properties:
+      isReading:
+        type: boolean
+    required:
+    - isReading
     type: object
   entity.Book:
     properties:
@@ -92,67 +138,25 @@ definitions:
         description: Valid is true if Time is not NULL
         type: boolean
     type: object
-  payloads.FindAllBooksPayload:
+  memo.CreateMemoParam:
     properties:
-      books:
-        items:
-          $ref: '#/definitions/payloads.FindBookPayload'
-        type: array
-      count:
+      bookId:
         type: integer
-    type: object
-  payloads.FindBookPayload:
-    properties:
-      ISBN:
+      category:
         type: string
-      author:
+      text:
         type: string
-      createdAt:
-        type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
-      description:
-        type: string
-      id:
-        type: integer
-      image:
-        type: string
-      isReading:
-        type: boolean
-      memoCount:
-        type: integer
-      memos:
-        items:
-          $ref: '#/definitions/entity.Memo'
-        type: array
-      price:
-        type: string
-      publisher:
-        type: string
-      shopLink:
-        type: string
-      title:
-        type: string
-      updatedAt:
-        type: string
-      userId:
-        type: integer
-    type: object
-  payloads.UpdateBookPayload:
-    properties:
-      isReading:
-        type: boolean
     required:
-    - isReading
+    - bookId
+    - category
+    - text
     type: object
-  payloads.UserStatPayload:
+  memo.UpdateMemoPayload:
     properties:
-      duration:
-        type: integer
-      memoCount:
-        type: integer
-      readCount:
-        type: integer
+      category:
+        type: string
+      text:
+        type: string
     type: object
   search.SearchItem:
     properties:
@@ -175,18 +179,14 @@ definitions:
       title:
         type: string
     type: object
-  service.CreateMemoParam:
+  user.UserStatPayload:
     properties:
-      bookId:
+      duration:
         type: integer
-      category:
-        type: string
-      text:
-        type: string
-    required:
-    - bookId
-    - category
-    - text
+      memoCount:
+        type: integer
+      readCount:
+        type: integer
     type: object
 info:
   contact: {}
@@ -213,7 +213,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/payloads.FindAllBooksPayload'
+            $ref: '#/definitions/book.FindAllBooksPayload'
       summary: 사용자가 등록한 모든 책을 조회하는 API
       tags:
       - book
@@ -232,7 +232,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/controller.CreateBookParam'
+          $ref: '#/definitions/book.CreateBookParam'
       produces:
       - application/json
       responses:
@@ -312,12 +312,12 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: payloads.UpdateBookPayload{}
+      - description: UpdateBookPayload{}
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/payloads.UpdateBookPayload'
+          $ref: '#/definitions/book.UpdateBookPayload'
       - description: "12345678"
         in: path
         name: bookId
@@ -340,11 +340,21 @@ paths:
       description: Naver API를 이용해 책을 검색하게 하는 API query string으로 title을 넘기면 검색 결과를
         반환.
       parameters:
+      - description: Bearer 570d33ca-bd5c-4019-9192-5ee89229e8ec
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: 미움받을 용기
         in: query
         name: title
         required: true
         type: string
+      - description: "1"
+        in: query
+        name: page
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -368,12 +378,12 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: service.CreateMemoParam{}
+      - description: CreateMemoParam{}
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/service.CreateMemoParam'
+          $ref: '#/definitions/memo.CreateMemoParam'
       produces:
       - application/json
       responses:
@@ -430,7 +440,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/controller.UpdateMemoPayload'
+          $ref: '#/definitions/memo.UpdateMemoPayload'
       produces:
       - application/json
       responses:
@@ -458,7 +468,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/payloads.UserStatPayload'
+            $ref: '#/definitions/user.UserStatPayload'
       summary: 사용자 통계 조회 API
       tags:
       - user

@@ -31,7 +31,7 @@ func NewBookService(repo BookRepository, bs search.BookSearch) BookService {
 // CreateBook 책 추가
 func (b bookService) CreateBook(ISBN string, userID string) (entity.Book, error) {
 	// search naver
-	searchedRes, err := b.bookSearch.SearchBook(ISBN)
+	searchedRes, err := b.bookSearch.SearchBook(ISBN, "")
 	if err != nil {
 		return entity.Book{}, err
 	}
